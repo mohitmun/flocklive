@@ -30,8 +30,8 @@ class ApplicationController < ActionController::Base
       gmail = user.get_gmail_instance
       histories = gmail.list_user_histories("me", start_history_id: history_id).history || []
       histories.each do |history|
-        if history.messages_added
-          history.messages_added.each do |added_message|
+        if history.messages
+          history.messages.each do |added_message|
             message = gmail.get_user_message("me", added_message.message.id)
             text = ""
             last_message = {}
