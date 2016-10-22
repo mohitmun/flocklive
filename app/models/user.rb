@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
   def get_credentials
     local_url = "http://localhost:3000"
     authorizer = get_authorizer
-    credentials = authorizer.get_credentials("")
+    credentials = authorizer.get_credentials("") rescue nil
     return credentials
   end
 
