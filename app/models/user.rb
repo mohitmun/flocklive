@@ -26,6 +26,34 @@ class User < ActiveRecord::Base
 
 
   Gmail = Google::Apis::GmailV1
+  Drive = Google::Apis::DriveV3
+  
+  def file_list(query)
+    drive = get_drive_instance
+    page_token = nil
+    limit = 1000
+    begin
+      result = drive.list_files(q: query,
+                                page_size: [limit, 100].min,
+                                page_token: page_token,
+                                fields: 'files(id,name),next_page_token')
+
+      result.files.each { |file| puts "#{file.id}, #{file.name}" }
+      limit -= result.files.length
+      if result.next_page_token
+        page_token = result.next_page_token
+      else
+        page_token = nil
+      end
+    end while !page_token.nil? && limit > 0
+  end
+
+  def get_drive_instance
+    drive = Drive::DriveService.new
+    drive.authorization = get_credentials
+    return drive
+  end
+
   def get_gmail_instance
     gmail = Gmail::GmailService.new
     gmail.authorization = get_credentials
@@ -38,6 +66,10 @@ class User < ActiveRecord::Base
     #send as
   end
 
+  def send_to_id(id, message, attachments)
+    RestClient.get "https://api.flock.co/v1/chat.sendMessage", params:{token: flock_token, to: id, text: message, attachments: attachments}
+  end
+
   def get_credentials
     local_url = "http://localhost:3000"
     authorizer = get_authorizer
@@ -45,10 +77,27 @@ class User < ActiveRecord::Base
     return credentials
   end
 
+  def download(file_id, file)
+      drive = get_drive_instance
+      path = "public/#{file}"
+      file = File.open(path, 'wb')
+      file.binmode
+      dest = file
+      drive.get_file(file_id, download_dest: dest)
+
+      if dest.is_a?(StringIO)
+        dest.rewind
+        STDOUT.write(dest.read)
+      else
+        puts "File downloaded to #{file}"
+      end
+      return file
+    end
+
   def get_authorizer
     client_id = Google::Auth::ClientId.new("705897375925-i3uets68hada6uuf8gootln7b4tg73ak.apps.googleusercontent.com", "74phjI-_NPRTpLShTqYHKEoP")
     # token_store = Google::Auth::Stores::FileTokenStore.new(:file => "lol")
-    authorizer = Google::Auth::UserAuthorizer.new(client_id, [Gmail::AUTH_SCOPE, "https://www.google.com/calendar/feeds"], token_store)
+    authorizer = Google::Auth::UserAuthorizer.new(client_id, [Drive::AUTH_DRIVE, Gmail::AUTH_SCOPE, "https://www.google.com/calendar/feeds"], token_store)
   end
 
   def send_mail(to, subject, body)

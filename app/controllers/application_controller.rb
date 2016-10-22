@@ -10,10 +10,43 @@ class ApplicationController < ActionController::Base
     response.headers.delete('X-Frame-Options')
   end
 
+  def drive
+    @query = params["query"] || ""
+    render "welcome/drive"
+  end
+
+  def attach
+    # raise params.inspect
+    file_id = params["file_id"]
+    file_name = params["file_name"]
+    mime = params["mime"]
+    # file = current_user.get_drive_instance.get_file(file_id)
+    # current_user.download(file_id, file_name)
+    url = root_url+"download?file_name=#{file_name}&file_id=#{file_id}"
+    attachments = {"downloads": [
+        { "src":  "https://lh4.googleusercontent.com/-v0soe-ievYE/AAAAAAAAAAI/AAAAAAADnx8/TYw5hefoVmg/s0-c-k-no-ns/photo.jpg", "mime": "image/jpeg" , "filename": "photo" }
+    ]}
+    current_user.send_to_id(JSON.parse(params["flockEvent"])["chat"] ,"Attachments",attachments)
+    redirect_to params["redirect_to"]
+  end
+
+  def download
+    file_id = params["file_id"]
+    file_name = params["file_name"]
+    current_user.download(file_id, file_name)
+    url = root_url + file_name
+    url = url.gsub("[","%5B").gsub("]","%5D").gsub(" ", "%20")
+    send_file "public/#{file_name}", :x_sendfile=>true
+  end
+
   def permit_params
     params.permit!
     if params[:flockValidationToken]
       decoded_token = JWT.decode params[:flockValidationToken], "e716b534-55ff-45f4-b662-725ed9e39936", true, { :algorithm => 'HS256' }
+      session[:current_user_id] = User.find_by(flock_user_id: decoded_token[0]["userId"]).id rescue nil
+    end
+    if params[:flockEventToken]
+      decoded_token = JWT.decode params[:flockEventToken], "e716b534-55ff-45f4-b662-725ed9e39936", true, { :algorithm => 'HS256' }
       session[:current_user_id] = User.find_by(flock_user_id: decoded_token[0]["userId"]).id rescue nil
     end
   end
