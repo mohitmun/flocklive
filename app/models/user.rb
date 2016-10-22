@@ -127,7 +127,7 @@ class User < ActiveRecord::Base
     request = Net::HTTP::Post.new(url)
     request["content-type"] = 'application/json'
     request["cache-control"] = 'no-cache'
-    request.body = "{\"token\": \"#{flock_token}\", \"to\": \"#{id}\", \"text\": \"#{message}\", \"attachments\":[{\"downloads\":[{\"src\": \"#{attachments[:src]}\", \"mime\": \"#{attachments[:mime]}\", \"size\": \"#{attachments[:size]}\", \"filename\": \"#{attachments[:filename]}\" }]} ] }"
+    request.body = "{\"token\": \"#{flock_token}\", \"title\": \"#{attachments[:filename]}\", \"to\": \"#{id}\", \"text\": \"#{message}\", \"attachments\":[{\"downloads\":[{\"src\": \"#{attachments[:src]}\", \"mime\": \"#{attachments[:mime]}\", \"size\": \"#{attachments[:size]}\", \"filename\": \"#{attachments[:filename]}\" }]} ] }"
     puts "===="
     puts attachments
     puts "===="
