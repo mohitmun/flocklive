@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
       histories.each do |history|
         if history.messages
           history.messages.each do |added_message|
-            message = gmail.get_user_message("me", added_message.message.id)
+            message = gmail.get_user_message("me", added_message.id)
             text = ""
             last_message = {}
             selected_headers = message.payload.headers.select{|a| ["Subject", "From"].include?(a.name)}
