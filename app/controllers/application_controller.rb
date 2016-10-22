@@ -119,6 +119,10 @@ class ApplicationController < ActionController::Base
     authorizer = current_user.get_authorizer
     credentials = authorizer.get_and_store_credentials_from_code(user_id: "", code: params["code"], base_url: root_url)
     current_user.update_attribute(:gmail_address, current_user.get_gmail_instance.get_user_profile("me").email_address)
+    wr = Google::Apis::GmailV1::WatchRequest.new
+    wr.topic_name = "projects/plucky-bulwark-676/topics/gmail-inbound"
+    wr.label_ids = ["INBOX"]
+    current_user.get_gmail_instance.watch_user("me", wr)
     redirect_to root_url
     # credentials = User.initialize_google_credentials
     # credentials.code = params["code"]
