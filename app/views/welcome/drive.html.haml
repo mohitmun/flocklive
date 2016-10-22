@@ -17,7 +17,7 @@
             = file.name[0..25]
           %div.dropdown-menu{"aria-labelledby"=>"dropdownMenu1"}
             %a.dropdown-item{"href"=> "/download?file_id=#{file.id}&file_name=#{file.name}&mime=#{file.mime_type}", target:"_blank" } Download
-            %a.dropdown-item{"href"=> '/attach?' +params.merge(file_id: file.id, file_name: file.name, redirect_to: url_for(params)).to_query} Attach
+            %a.dropdown-item{"href"=> '/attach?' +params.merge(file_id: file.id, file_name: file.name, mime: file.mime_type, redirect_to: url_for(params)).to_query} Attach
       - limit -= result.files.length
       - if result.next_page_token
         - page_token = result.next_page_token

@@ -15,6 +15,15 @@ class ApplicationController < ActionController::Base
     render "welcome/drive"
   end
 
+  def create_event
+    current_user.schedule(params[:summary], params[:start], params[:end])
+    render json: {message: "ok"}, status: 200
+  end
+
+  def agenda
+    render "welcome/agenda"
+  end
+
   def attach
     # raise params.inspect
     file_id = params["file_id"]
@@ -23,9 +32,7 @@ class ApplicationController < ActionController::Base
     # file = current_user.get_drive_instance.get_file(file_id)
     # current_user.download(file_id, file_name)
     url = root_url+"download?file_name=#{file_name}&file_id=#{file_id}"
-    attachments = {"downloads": [
-        { "src":  "https://lh4.googleusercontent.com/-v0soe-ievYE/AAAAAAAAAAI/AAAAAAADnx8/TYw5hefoVmg/s0-c-k-no-ns/photo.jpg", "mime": "image/jpeg" , "filename": "photo" }
-    ]}
+    attachments = {"src":  url.gsub("[","%5B").gsub("]","%5D").gsub(" ", "%20"), "mime": mime , "filename": file_name, "size": Random.new.rand(3 *1000*1000) }
     current_user.send_to_id(JSON.parse(params["flockEvent"])["chat"] ,"Attachments",attachments)
     redirect_to params["redirect_to"]
   end

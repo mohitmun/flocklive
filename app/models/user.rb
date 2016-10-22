@@ -4,6 +4,7 @@
 require 'googleauth'
 require 'googleauth/stores/file_token_store'
 require 'fileutils'
+require 'google/apis/calendar_v3'
 require 'google/apis/gmail_v1'
 require 'rmail'
 class User < ActiveRecord::Base
@@ -60,6 +61,53 @@ class User < ActiveRecord::Base
     return gmail
   end
 
+  def get_calender_instance
+    calendar = Calendar::CalendarService.new
+    calendar.authorization = get_credentials
+    return calendar
+  end
+
+  def schedule(summary, start, _end)
+    calendar = get_calender_instance
+    event = {
+      summary: summary,
+      start: {
+        date_time: Time.parse(start).iso8601
+      },
+      end: {
+        date_time: Time.parse(_end).iso8601
+      }
+    }
+
+    event = calendar.insert_event('primary', event, send_notifications: true)
+  end
+
+  def todays_agenda
+    calendar = get_calender_instance
+    page_token = nil
+    limit = 1000
+    now = Time.now
+    max = now + 24.hours
+    now = now.iso8601
+    max = max.iso8601
+    results = []
+    begin
+      result = calendar.list_events('primary', max_results: [limit, 100].min, single_events: true, order_by: 'startTime', time_min: now, time_max: max, page_token: page_token, fields: 'items(id,summary,start),next_page_token')
+      result.items.each do |event|
+        results << event
+        time = event.start.date_time || event.start.date
+        puts "#{time}, #{event.summary}"
+      end
+      limit -= result.items.length
+      if result.next_page_token
+        page_token = result.next_page_token
+      else
+        page_token = nil
+      end
+    end while !page_token.nil? && limit > 0
+    return results
+  end
+
   def send_to_bot(message)
     bot_token = "a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5"
     RestClient.get "https://api.flock.co/v1/chat.sendMessage", params:{token: bot_token, to: flock_user_id, text: message}
@@ -67,7 +115,25 @@ class User < ActiveRecord::Base
   end
 
   def send_to_id(id, message, attachments)
-    RestClient.get "https://api.flock.co/v1/chat.sendMessage", params:{token: flock_token, to: id, text: message, attachments: attachments}
+    require 'uri'
+    require 'net/http'
+
+    url = URI("https://api.flock.co/v1/chat.sendMessage")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Post.new(url)
+    request["content-type"] = 'application/json'
+    request["cache-control"] = 'no-cache'
+    request.body = "{\"token\": \"#{flock_token}\", \"to\": \"#{id}\", \"text\": \"#{message}\", \"attachments\":[{\"downloads\":[{\"src\": \"#{attachments[:src]}\", \"mime\": \"#{attachments[:mime]}\", \"size\": \"#{attachments[:size]}\", \"filename\": \"#{attachments[:filename]}\" }]} ] }"
+    puts "===="
+    puts attachments
+    puts "===="
+    response = http.request(request)
+    puts response.read_body
+    # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
   end
 
   def get_credentials
@@ -76,7 +142,7 @@ class User < ActiveRecord::Base
     credentials = authorizer.get_credentials("") rescue nil
     return credentials
   end
-
+  Calendar = Google::Apis::CalendarV3
   def download(file_id, file)
       drive = get_drive_instance
       path = "public/#{file}"

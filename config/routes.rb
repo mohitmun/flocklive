@@ -11,11 +11,13 @@ Rails.application.routes.draw do
    root :to => "application#flock_landing"
   post '/gmail_inbound' => 'application#gmail_inbound'
   post '/send_to_telegram' => 'application#send_to_telegram'
+  get '/create_event' => 'application#create_event'
   post '/flock_events' => 'application#flock_events'
   get '/flock_events' => 'application#flock_events'
   get '/flock_landing' => 'application#flock_landing'
   get '/file' => 'application#file'
   get '/drive' => 'application#drive'
+  get '/agenda' => 'application#agenda'
   get '/attach' => 'application#attach'
   get '/download' => 'application#download'
   get '/connect/goodreads' => 'application#connect_goodreads'
