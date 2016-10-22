@@ -18,9 +18,36 @@ class ApplicationController < ActionController::Base
   end
 
   def gmail_inbound
+    data = params["message"]["data"]
+    decoded_data = JSON.parse(Base64.decode64(data))
     puts "=="*100
-    puts params.inspect
+    puts decoded_data
     puts "=="*100
+    history_id = decoded_data["historyId"]
+    user_email_address = decoded_data["emailAddress"]
+    user = User.find_by(gmail_address: user_email_address)
+    if user
+      gmail = user.get_gmail_instance
+      histories = gmail.list_user_histories("me", start_history_id: history_id).history
+      histories.each do |history|
+        if history.messages_added
+          history.messages_added.each do |added_message|
+            message = gmail.get_user_message("me", added_message.message.id)
+            text = ""
+            selected_headers = message.payload.headers.select{|a| ["Subject", "From"].include?(a.name)}
+            selected_headers.each do |header|
+              text = text + header.name + " : " + header.value + "\n"
+            end
+            if message.payload.body.data
+              text = text + "Body : " + message.payload.body.data.strip
+            end
+            user.send_to_bot(text)
+          end
+        else
+
+        end
+      end
+    end
     render json: {message: "ok"}, status: 200
   end
 
@@ -78,6 +105,7 @@ class ApplicationController < ActionController::Base
   def oauth2_callback_google
     authorizer = current_user.get_authorizer
     credentials = authorizer.get_and_store_credentials_from_code(user_id: "", code: params["code"], base_url: root_url)
+    current_user.update_attribute(:gmail_address, current_user.get_gmail_instance.get_user_profile("me").email_address)
     redirect_to root_url
     # credentials = User.initialize_google_credentials
     # credentials.code = params["code"]

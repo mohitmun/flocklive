@@ -29,6 +29,12 @@ class User < ActiveRecord::Base
     return gmail
   end
 
+  def send_to_bot(message)
+    bot_token = "a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5"
+    RestClient.get "https://api.flock.co/v1/chat.sendMessage", params:{token: bot_token, to: flock_user_id, text: message}
+    #send as
+  end
+
   def get_credentials
     local_url = "http://localhost:3000"
     authorizer = get_authorizer
