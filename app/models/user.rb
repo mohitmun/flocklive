@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
 
   def init
     self.content ||= {}
-    self.content.deep_symbolize_keys!
+    # self.content.deep_symbolize_keys!
     # @session = get_gdrive_session
   end
 
