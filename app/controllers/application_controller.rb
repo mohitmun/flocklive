@@ -4,6 +4,11 @@ class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
   before_filter :permit_params
   # before_filter :login_if_not, :except => [:connect_google, :oauth2_callback_google, :youtube_liked, :send_to_telegram, :flock_events]
+  before_filter :allow_iframe_requests
+
+  def allow_iframe_requests
+    response.headers.delete('X-Frame-Options')
+  end
 
   def permit_params
     params.permit!
