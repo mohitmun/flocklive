@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
     puts "=="*100
     puts params.inspect
     puts "=="*100
+    render json: {message: "ok"}, status: 200
   end
 
   def login_if_not
