@@ -1,10 +1,3 @@
-# ifttti
-Internet Automation
-
-1. When new video liked on Youtube, get direct mp3 file link through PushBullet
-
-2. When new book added to "to-read" shelf on Goodreads, upload it on Google drive
-
-TODO
-* UI
-* Spotify to Google drive
+# FlockGFW
+Google for Work integration for Flock
+>>>>>>> 94b63b6c9cfa35c69477c74fd25f753c4ccc8224
