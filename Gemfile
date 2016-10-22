@@ -13,6 +13,7 @@ gem 'rails_12factor'
 gem 'rest-client', '>= 1.7.3'
 gem 'rmail'
 gem 'haml'
+gem 'jwt'
 gem 'google-cloud-pubsub'
 # Use Uglifier as compressor for JavaScript assets
 gem 'google-api-client', '~> 0.9'

@@ -279,6 +279,7 @@ DEPENDENCIES
   haml
   jbuilder (~> 2.0)
   jquery-rails
+  jwt
   pg
   pry
   rails (= 4.2.5.1)

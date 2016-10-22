@@ -7,6 +7,14 @@ class ApplicationController < ActionController::Base
 
   def permit_params
     params.permit!
+    if params[:flockValidationToken]
+      decoded_token = JWT.decode params[:flockValidationToken], "e716b534-55ff-45f4-b662-725ed9e39936", true, { :algorithm => 'HS256' }
+      session[:current_user_id] = User.find_by(flock_user_id: decoded_token[0]["userId"]).id rescue nil
+    end
+  end
+
+  def current_user
+    User.find session[:current_user_id] if session[:current_user_id]
   end
 
   def gmail_inbound
@@ -50,17 +58,16 @@ class ApplicationController < ActionController::Base
     case params["name"]
     when "app.install"
       # localhost:3000/flock_events?token=98ac35f0-7b3e-4f0c-97df-e43614cce558&name=app.install&userId="u:auecvebiuce2xcjb"
-      user = User.find_or_create_by(flock_token: params["token"]) do |u|
-        u.flock_user_id = params["userId"]
+      user = User.find_or_create_by(flock_user_id: params["userId"]) do |u|
+        u.flock_token = params["token"]
         u.email = "#{params['userId'].split(':')[1]}@flockgfw.com"
         u.password = "User1234"
       end
       user.create_token_store
-      sign_in(:user, user)
     end
     # {"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb", "controller"=>"application", "action"=>"flock_events", "application"=>{"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb"}}
 
-    redirect_to root_url
+    render json: {message: "ok"}, status: 200
   end
 
   def connect_google
