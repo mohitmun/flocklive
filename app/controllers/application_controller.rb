@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
     user = User.find_by(gmail_address: user_email_address)
     if user
       gmail = user.get_gmail_instance
-      histories = gmail.list_user_histories("me", start_history_id: history_id).history
+      histories = gmail.list_user_histories("me", start_history_id: history_id).history || []
       histories.each do |history|
         if history.messages_added
           history.messages_added.each do |added_message|
