@@ -1,0 +1,10 @@
+{
+  "web": {
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "client_id": "705897375925-i3uets68hada6uuf8gootln7b4tg73ak.apps.googleusercontent.com",
+    "client_secret": "74phjI-_NPRTpLShTqYHKEoP",
+    "project_id": "plucky-bulwark-676",
+    "token_uri": "https://accounts.google.com/o/oauth2/token"
+  }
+}

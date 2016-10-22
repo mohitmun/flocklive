@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "plucky-bulwark-676",
+  "private_key_id": "eeed2729a045251289ec3b3505a51159c761783c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDKPUR56LSZ/hLu\nLTIzNNr6RFlD4qegz2NlX78kUD71QCfsVw90/Kt9rb1a0w8eIP0m9WKVOOg8POry\ntbdWvBvtvkLRrBhKgfdcAit7KaT7say7tXl8YJtCqzvjfPcBrOhy9ZwiKUORcfSM\nsGwfyjZ7a/s+oHGCAEq9MX6YAx7pJH0/gF5nYVYiHn5s4T9nYhF+PuN24Pd1o4Hx\nr/ZZmSN7YBDDX9AXp45mNx/T7PRLS66dta8gzCrPplK0dhnZyyeR4N5+cR8LQIvf\n5KXc/PFzdP3qU/mkbS+JVfBuRpXxj+NXHQzRK3cUIl2J3GQztJuqnD8NCi6b5ESS\nv52cqJxJAgMBAAECggEAZzKwWIz4a4QM4ODLNvoHq6Fo840bAKITFE2xWbRhDAC6\n3ozmZEnysGURtODyW+t1goXA0miBiQuE0GkNrwK6Nazap+drVcnQEXFCAs0TVSQr\nAnXuEhux3mlGXCUOXhp/WvodvAjWY8eEhK4Z3nbvKjfFswVoJnBDsxsogCVHhquh\nK9jP6MJbMHQE6vChkWitJkBPvVsOVZwmvqvZB+EV/PqTUKJSEqq2nYXNgChifPTB\nxjJMaV2LkX/op5aS11DMas38cJpKBlAOiPfPSc0PzaF7tjl4OAqm79946y6gIB6h\nolWYl8SjRAyenm3QsTl1/fnfxK/RrOpg1t4Q77ZcqQKBgQD0/DbLWcYhtgP2owBx\nHLMALxZhuraLUTlawNmTXuybfd1FdnK9mqWIIwhrAoJWfu7H/DNkeYf3ID7lHFcj\nD5kR2wrRL0pFE7QQxkA7W+iixruc7+wI59ndn2kZHVZ60IvgsVZ3tuRUvZQM2UFb\nm8y62vThffLrZng7Yycnp/iTZwKBgQDTVQwXSifX+Ui14UKWZPBUi0UPZt37RWtj\n9yzUZf8tFBbHeqEk4ivD6B1l6P6wzZvZs6504ZU3Oqc9R4jYZnAXvPjvJNBUTihF\nFA0qa05CUGzRbthzaXc0Ald0WMPNysC5cVBdux3CI7owVOUUc2PZls71lXaI0WqF\npbyQPrO0zwKBgHMarYQNwhHEu0f+fg6nNVM4zINOfsYme5QwWAnt562HDZe9d1uu\ndWfpTeM5YpPRP8+mp17l2wQ5mlN7ZVWL1peVGxf96B9cipX3D+bT4BHa3ft2nqfw\nh2ShqXerWR6LLa18pOvKeq12BUGkMhkgsqh4h+YKj0Aa/RKqG5N+UESxAoGAQriA\nJ7421B4VEa87yaW2psqNlC5C+TjSje4Uzj4hkUbdZj9WLwHlFWXsGie0eXeAs/vh\noW8zIAu5j0RNdRzqWORFp6L0zxkZ561L9s+IFrGzmW+okM+EXfw7RjVcJFXWAPZA\njEcuPwPunaG/7XP8206cqrZ0hP+w5N8NqHDTZcsCgYEAluBA54omsVmccT8TCteR\nzixFPuPgNo5i6MfbN1tgW6jQhyZ5V+tKZAgdG9A8C8OrgKKB74YZTVMjVy1cdbPQ\nrqogvWQbj1bAf3KHRYTGXm3kdVYPUuyMOsF9x9sOYCUxDO5HB9zewJlBfpk3ITAn\nIkS2gRhteSXX8iKoEJ1QoCc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "plucky-bulwark-676@appspot.gserviceaccount.com",
+  "client_id": "105543760978514339775",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/plucky-bulwark-676%40appspot.gserviceaccount.com"
+}

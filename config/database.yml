@@ -1,0 +1,8 @@
+development:
+  adapter: postgresql
+  encoding: utf8
+  database: flock-gfw
+  pool: 5
+  host: localhost
+  username: baldor
+  password: baldor123
