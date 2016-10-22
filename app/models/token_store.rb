@@ -1,6 +1,6 @@
 class TokenStore < ActiveRecord::Base
   belongs_to :user
- def load(_id)
+  def load(_id)
     content || ""
   end
 

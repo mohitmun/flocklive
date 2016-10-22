@@ -15,6 +15,9 @@ class User < ActiveRecord::Base
   after_initialize :init
   validates_uniqueness_of :flock_token, message: "must be unique"
   has_one :token_store
+  
+  store_accessor :content, :last_message
+
   def init
     self.content ||= {}
     self.content.deep_symbolize_keys!

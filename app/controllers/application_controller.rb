@@ -34,13 +34,17 @@ class ApplicationController < ActionController::Base
           history.messages_added.each do |added_message|
             message = gmail.get_user_message("me", added_message.message.id)
             text = ""
+            last_message = {}
             selected_headers = message.payload.headers.select{|a| ["Subject", "From"].include?(a.name)}
             selected_headers.each do |header|
               text = text + header.name + " : " + header.value + "\n"
+              last_message[header.name] = header.value
             end
             if message.payload.body.data
               text = text + "Body : " + message.payload.body.data.strip
             end
+            user.last_message = last_message
+            user.save
             user.send_to_bot(text)
           end
         else
@@ -91,6 +95,15 @@ class ApplicationController < ActionController::Base
         u.password = "User1234"
       end
       user.create_token_store
+    when "chat.receiveMessage"
+      message = params["message"]
+      text = message["text"]
+      if text.split(" ")[0].to_s.downcase == "reply"
+        user = User.find_by(flock_user_id: message["from"])
+        user.send_mail(user.last_message["From"], "Re: #{user.last_message['Subject']}", text.split(" ")[1..-1])
+      end
+      # {"message"=>{"type"=>"CHAT", "id"=>"00003018-0000-0022-0000-000000c5862b", "to"=>"u:Br1h5szr7skwk1wz", "from"=>"u:auecvebiuce2xcjb", "actor"=>"", "text"=>"reply Cool buddy", "uid"=>"1477129719302-tRXqKC-mh105"}, "name"=>"chat.receiveMessage", "userId"=>"u:auecvebiuce2xcjb"}
+
     end
     # {"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb", "controller"=>"application", "action"=>"flock_events", "application"=>{"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb"}}
 
