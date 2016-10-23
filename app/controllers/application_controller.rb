@@ -64,12 +64,12 @@ class ApplicationController < ActionController::Base
 
   def gmail_inbound
     render json: {message: "ok"}, status: 200
+    data = params["message"]["data"]
     decoded_data = JSON.parse(Base64.decode64(data))
     puts "=="*100
     puts decoded_data
     puts "=="*100
     sleep 15
-    data = params["message"]["data"]
     history_id = decoded_data["historyId"]
     user_email_address = decoded_data["emailAddress"]
     user = User.find_by(gmail_address: user_email_address)
