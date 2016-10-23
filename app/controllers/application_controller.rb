@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
     user_email_address = decoded_data["emailAddress"]
     user = User.find_by(gmail_address: user_email_address)
     if user
-      user.delay(run_at: 10.seconds.from_now).get_history(history_id)
+      user.delay(run_at: 10.seconds.from_now).get_history(history_id,root_url)
     end
     render json: {message: "ok"}, status: 200
   end

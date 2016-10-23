@@ -198,7 +198,7 @@ class User < ActiveRecord::Base
   end
   # HISTORY_IDS = []
 
-  def get_history(history_id)
+  def get_history(history_id, root_url)
     gmail = get_gmail_instance
     histories = gmail.list_user_histories("me", start_history_id: history_id).history || []
     histories.each do |history|
