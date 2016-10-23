@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
     request = Net::HTTP::Post.new(url)
     request["content-type"] = 'application/json'
     request["cache-control"] = 'no-cache'
-    request.body = "{\"sendAs\":{\"name\": \"#{sender}\"}, \"token\": \"a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5\", \"to\": \"#{flock_user_id}\", \"text\": \"\", \"attachments\":[{\"views\": {\"flockml\": \"Subject: <strong style='font-size: 16px;'>#{subject}</strong><br/>Body: <div>#{body}</div>\"}, \"buttons\":[{\"name\": \"Reply\", \"id\": \"reply\", \"action\": { \"type\": \"openWidget\", \"url\": \"http://#{root}/replyModal?from=#{from}&subject=#{subject}\", \"desktopType\": \"modal\", \"mobileType\": \"modal\" } },{  \"id\": \"calender:#{subject}\", \"name\": \"Add to Calender\", \"action\": {\"type\": \"sendToAppService\"}}] } ]} "
+    request.body = "{\"sendAs\":{\"name\": \"#{sender}\"}, \"token\": \"a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5\", \"to\": \"#{flock_user_id}\", \"text\": \"\", \"attachments\":[{\"views\": {\"flockml\": \"Subject: <strong style='font-size: 16px;'>#{subject}</strong><br/>Body: <div>#{body}</div>\"}, \"buttons\":[{\"name\": \"Reply\", \"id\": \"reply\", \"action\": { \"type\": \"openWidget\", \"url\": \"#{root}/replyModal?flock_user_id=#{flock_user_id}&from=#{sender}&subject=#{subject}\", \"desktopType\": \"modal\", \"mobileType\": \"modal\" } },{  \"id\": \"calender:#{subject}\", \"name\": \"Add to Calender\", \"action\": {\"type\": \"sendToAppService\"}}] } ]} "
     response = http.request(request)
     puts response.read_body
   end
@@ -195,6 +195,39 @@ class User < ActiveRecord::Base
     message.header['Subject'] = subject
     message.body = body
     gmail.send_user_message('me', upload_source: StringIO.new(message.to_s), content_type: 'message/rfc822')
+  end
+
+  def get_history(history_id)
+    gmail = get_gmail_instance
+    histories = gmail.list_user_histories("me", start_history_id: history_id).history || []
+    histories.each do |history|
+      if history.messages
+        history.messages.each do |added_message|
+          message = gmail.get_user_message("me", added_message.id)
+          text = ""
+          last_message = {}
+          selected_headers = message.payload.headers.select{|a| ["Subject", "From"].include?(a.name)}
+          selected_headers.each do |header|
+            text = text + header.name + " : " + header.value + "\n"
+            last_message[header.name.downcase] = header.value
+            puts "===="*50
+            puts last_message
+            puts "===="*50
+          end
+          if message.payload.body.data
+            text = text + "Body : " + message.payload.body.data.strip
+          end
+          puts "===="*50
+          puts last_message
+          puts "===="*50
+          self.last_message = last_message
+          self.save
+          send_to_bot_mail(last_message["from"], last_message["subject"], text, root_url)
+        end
+      else
+
+      end
+    end
   end
 
   # def upload_to_drive(local_path, file_name, remote_folder = nil, public = true)

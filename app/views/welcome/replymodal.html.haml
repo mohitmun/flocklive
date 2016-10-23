@@ -1,0 +1,18 @@
+%script{src: "https://apps-static.flock.co/js-sdk/0.1.0/flock.js"}
+%div{style: "margin-top: 25px;padding: 50px"}
+  %b
+    To - 
+    %span#from= params[:from]
+  %input.form-control#body{"type"=>"text", "placeholder"=>"Body", style: "border-color: #0abe50;margin-top: 20px; height: 250px;"}
+  .btn.btn-primary.submit_event{"data-disable-with"=> "Creating", style: "background-color: #0abe50; margin-top: 10px"} Send
+  = hidden_field_tag :fui, params[:flock_user_id], id: "fui"
+  = hidden_field_tag :sub, params[:subject], id: "subject"
+%script
+  :plain
+    $(document).on("click", ".submit_event", function(){
+      $(this).addClass("disabled");
+      $(this).text("Sending..");
+      $.ajax({url: '/submit_reply?flock_user_id=' + $("#fui").val() + "&body=" + $("#body").val() + "&subject=" + $("#subject").val() + "&to=" + $("#from").text(), type: 'GET', success: function(){
+        flock.close();
+      }});
+    });

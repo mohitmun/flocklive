@@ -74,32 +74,8 @@ class ApplicationController < ActionController::Base
     user_email_address = decoded_data["emailAddress"]
     user = User.find_by(gmail_address: user_email_address)
     if user
-      gmail = user.get_gmail_instance
-      histories = gmail.list_user_histories("me", start_history_id: history_id).history || []
-      histories.each do |history|
-        if history.messages
-          history.messages.each do |added_message|
-            message = gmail.get_user_message("me", added_message.id)
-            text = ""
-            last_message = {}
-            selected_headers = message.payload.headers.select{|a| ["Subject", "From"].include?(a.name)}
-            selected_headers.each do |header|
-              text = text + header.name + " : " + header.value + "\n"
-              last_message[header.name.downcase] = header.value
-            end
-            if message.payload.body.data
-              text = text + "Body : " + message.payload.body.data.strip
-            end
-            user.last_message = last_message
-            user.save
-            user.send_to_bot_mail(last_message["from"], last_message["subject"], text, root_url)
-          end
-        else
-
-        end
-      end
+      user.delay(run_at: 10.seconds.from_now).get_history(history_id)
     end
-    
   end
 
   def login_if_not
@@ -107,6 +83,16 @@ class ApplicationController < ActionController::Base
       session[:redirect_to] = request.path
       redirect_to "/connect/google"
     end
+  end
+
+  def replyModal
+    render 'welcome/replymodal'
+  end
+
+  def submit_reply
+    current_user = User.find_by(flock_user_id: params[:flock_user_id])
+    current_user.send_mail(params[:to], "Re: " + params[:subject], params[:body])
+    render json: {message: "ok"}, status: 200
   end
 
   def flock_landing

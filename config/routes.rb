@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   get '/flock_landing' => 'application#flock_landing'
   get '/file' => 'application#file'
   get '/drive' => 'application#drive'
+  get '/replyModal' => 'application#replyModal'
+  get '/submit_reply' => 'application#submit_reply'
   get '/agenda' => 'application#agenda'
   get '/attach' => 'application#attach'
   get '/download' => 'application#download'
