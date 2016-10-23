@@ -196,12 +196,14 @@ class User < ActiveRecord::Base
     message.body = body
     gmail.send_user_message('me', upload_source: StringIO.new(message.to_s), content_type: 'message/rfc822')
   end
+  HISTORY_IDS = []
 
   def get_history(history_id)
     gmail = get_gmail_instance
     histories = gmail.list_user_histories("me", start_history_id: history_id).history || []
     histories.each do |history|
       if history.messages
+        HISTORY_IDS.delete(history_id)
         history.messages.each do |added_message|
           message = gmail.get_user_message("me", added_message.id)
           text = ""
@@ -225,7 +227,9 @@ class User < ActiveRecord::Base
           send_to_bot_mail(last_message["from"], last_message["subject"], text, root_url)
         end
       else
-
+        HISTORY_IDS << history_id
+        sleep 7
+        get_history(history_id)
       end
     end
   end
