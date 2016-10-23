@@ -114,7 +114,7 @@ class User < ActiveRecord::Base
     #send as
   end
 
-  def send_to_bot_mail(sender, subject, body)
+  def send_to_bot_mail(sender, subject, body, root)
     # bot_token = "a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5"
     # RestClient.get "https://api.flock.co/v1/chat.sendMessage",
     # params: {sendAs:{name: sender}, token: bot_token, to: flock_user_id, text: " ", attachments:[{views: {flockml: "Subject: <strong style='font-size: 16px;'>#{subject}</strong><br/>Body: <div>#{body}</div>"}, buttons:[{name: "Reply", action: { type: "sendToAppService", url: "" } },{ name: "Add to Calender", action: {type: "sendToAppService", url: "/create_event?summary=#{subject}&start=#{Time.now + 1.hour}&end=#{Time.now + 2.hour}" }}] } ]}
@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
     request = Net::HTTP::Post.new(url)
     request["content-type"] = 'application/json'
     request["cache-control"] = 'no-cache'
-    request.body = "{\"sendAs\":{\"name\": \"#{sender}\"}, \"token\": \"a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5\", \"to\": \"#{flock_user_id}\", \"text\": \"\", \"attachments\":[{\"views\": {\"flockml\": \"Subject: <strong style='font-size: 16px;'>#{subject}</strong><br/>Body: <div>#{body}</div>\"}, \"buttons\":[{\"name\": \"Reply\", \"id\": \"reply\", \"action\": { \"type\": \"openWidget\", \"url\": \"\" } },{  \"id\": \"calender:#{subject}\", \"name\": \"Add to Calender\", \"action\": {\"type\": \"sendToAppService\"}}] } ]} "
+    request.body = "{\"sendAs\":{\"name\": \"#{sender}\"}, \"token\": \"a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5\", \"to\": \"#{flock_user_id}\", \"text\": \"\", \"attachments\":[{\"views\": {\"flockml\": \"Subject: <strong style='font-size: 16px;'>#{subject}</strong><br/>Body: <div>#{body}</div>\"}, \"buttons\":[{\"name\": \"Reply\", \"id\": \"reply\", \"action\": { \"type\": \"openWidget\", \"url\": \"http://#{root}/replyModal?from=#{from}&subject=#{subject}\", \"desktopType\": \"modal\", \"mobileType\": \"modal\" } },{  \"id\": \"calender:#{subject}\", \"name\": \"Add to Calender\", \"action\": {\"type\": \"sendToAppService\"}}] } ]} "
     response = http.request(request)
     puts response.read_body
   end

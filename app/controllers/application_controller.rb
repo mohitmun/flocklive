@@ -64,12 +64,12 @@ class ApplicationController < ActionController::Base
 
   def gmail_inbound
     render json: {message: "ok"}, status: 200
-    sleep 15
-    data = params["message"]["data"]
     decoded_data = JSON.parse(Base64.decode64(data))
     puts "=="*100
     puts decoded_data
     puts "=="*100
+    sleep 15
+    data = params["message"]["data"]
     history_id = decoded_data["historyId"]
     user_email_address = decoded_data["emailAddress"]
     user = User.find_by(gmail_address: user_email_address)
@@ -92,7 +92,7 @@ class ApplicationController < ActionController::Base
             end
             user.last_message = last_message
             user.save
-            user.send_to_bot_mail(last_message["from"], last_message["subject"], text)
+            user.send_to_bot_mail(last_message["from"], last_message["subject"], text, root_url)
           end
         else
 
