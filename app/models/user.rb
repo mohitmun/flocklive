@@ -114,6 +114,28 @@ class User < ActiveRecord::Base
     #send as
   end
 
+  def send_to_bot_mail(sender, subject, body)
+    # bot_token = "a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5"
+    # RestClient.get "https://api.flock.co/v1/chat.sendMessage",
+    # params: {sendAs:{name: sender}, token: bot_token, to: flock_user_id, text: " ", attachments:[{views: {flockml: "Subject: <strong style='font-size: 16px;'>#{subject}</strong><br/>Body: <div>#{body}</div>"}, buttons:[{name: "Reply", action: { type: "sendToAppService", url: "" } },{ name: "Add to Calender", action: {type: "sendToAppService", url: "/create_event?summary=#{subject}&start=#{Time.now + 1.hour}&end=#{Time.now + 2.hour}" }}] } ]}
+    require 'uri'
+    require 'net/http'
+
+    url = URI("https://api.flock.co/v1/chat.sendMessage")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Post.new(url)
+    request["content-type"] = 'application/json'
+    request["cache-control"] = 'no-cache'
+    request.body = "{\"sendAs\":{\"name\": \"#{sender}\"}, \"token\": \"a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5\", \"to\": \"#{flock_user_id}\", \"text\": \"\", \"attachments\":[{\"views\": {\"flockml\": \"Subject: <strong style='font-size: 16px;'>#{subject}</strong><br/>Body: <div>#{body}</div>\"}, \"buttons\":[{\"name\": \"Reply\", \"id\": \"reply\", \"action\": { \"type\": \"sendToAppService\", \"url\": \"\" } },{  \"id\": \"calender:#{subject}\", \"name\": \"Add to Calender\", \"action\": {\"type\": \"sendToAppService\"}}] } ]} "
+    response = http.request(request)
+    puts response.read_body
+  end
+
+# {"token": "a8811fb5-7a5d-4eb0-b34e-e9a8afa962a5", "to": "u:auecvebiuce2xcjb", "text": "", "attachments":[{"views": {"flockml": "<b>Mohit Munjani</b><br/>Subject: <strong style='font-size: 16px;'>This is subject</strong><br/>Body: <div>Body is the main body of the mail</div>"}, "buttons":[{"name": "Reply", "action": { "type": "sendToAppService", "url": "" } },{ "name": "Add to Calender", "action": {"type": "sendToAppService", "url": "" }}] } ]}
   def send_to_id(id, message, attachments)
     require 'uri'
     require 'net/http'

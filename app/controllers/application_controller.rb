@@ -64,6 +64,7 @@ class ApplicationController < ActionController::Base
 
   def gmail_inbound
     render json: {message: "ok"}, status: 200
+    sleep 5
     data = params["message"]["data"]
     decoded_data = JSON.parse(Base64.decode64(data))
     puts "=="*100
@@ -84,14 +85,14 @@ class ApplicationController < ActionController::Base
             selected_headers = message.payload.headers.select{|a| ["Subject", "From"].include?(a.name)}
             selected_headers.each do |header|
               text = text + header.name + " : " + header.value + "\n"
-              last_message[header.name] = header.value
+              last_message[header.name.downcase] = header.value
             end
             if message.payload.body.data
               text = text + "Body : " + message.payload.body.data.strip
             end
             user.last_message = last_message
             user.save
-            user.send_to_bot(text)
+            user.send_to_bot_mail(last_message["from"], last_message["subject"], text)
           end
         else
 
@@ -141,6 +142,15 @@ class ApplicationController < ActionController::Base
         u.password = "User1234"
       end
       user.create_token_store
+    when "client.pressButton"
+      current_user = User.find_by(flock_user_id: params["userId"])
+      if params["buttonId"].include?("calender")
+        current_user.schedule(params["buttonId"].split(":")[1], (Time.now + 1.hours).to_s , (Time.now + 2.hours).to_s)
+      elsif params["buttonId"].include?("reply")
+        # from = params["buttonId"].split(":")[1]
+        # subject = params["buttonId"].split(":")[2]
+        # current_user.send_mail()
+      end
     when "chat.receiveMessage"
       message = params["message"]
       text = message["text"]
