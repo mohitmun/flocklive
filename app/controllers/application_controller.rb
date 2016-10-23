@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
 
   def gmail_inbound
     render json: {message: "ok"}, status: 200
-    sleep 5
+    sleep 8
     data = params["message"]["data"]
     decoded_data = JSON.parse(Base64.decode64(data))
     puts "=="*100
