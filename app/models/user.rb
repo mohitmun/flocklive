@@ -232,7 +232,7 @@ class User < ActiveRecord::Base
     if histories.count == 0
       HISTORY_IDS << history_id
       sleep 7
-      get_history(HISTORY_IDS.sort[-1])
+      get_history(HISTORY_IDS.sort[-1], root_url)
     end
   end
 
