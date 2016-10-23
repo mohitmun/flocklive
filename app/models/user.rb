@@ -227,10 +227,12 @@ class User < ActiveRecord::Base
           send_to_bot_mail(last_message["from"], last_message["subject"], text, root_url)
         end
       else
-        HISTORY_IDS << history_id
-        sleep 10
-        get_history(history_id)
       end
+    end
+    if histories.count == 0
+      HISTORY_IDS << history_id
+      sleep 7
+      get_history(HISTORY_IDS.sort[-1])
     end
   end
 
