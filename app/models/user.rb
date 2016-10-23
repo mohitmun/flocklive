@@ -191,7 +191,7 @@ class User < ActiveRecord::Base
   def send_mail(to, subject, body)
     gmail = get_gmail_instance
     message = RMail::Message.new
-    message.header['To'] = "mohmun16@gmail.com"
+    message.header['To'] = to
     message.header['Subject'] = subject
     message.body = body
     gmail.send_user_message('me', upload_source: StringIO.new(message.to_s), content_type: 'message/rfc822')
