@@ -11,22 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161022073102) do
+ActiveRecord::Schema.define(version: 20170125101423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "books", force: :cascade do |t|
-    t.integer  "user_id"
-    t.text     "title"
-    t.text     "isbn"
-    t.text     "author"
-    t.text     "cover_image"
-    t.json     "content"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.integer  "goodreads_id"
-  end
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false
@@ -44,11 +32,17 @@ ActiveRecord::Schema.define(version: 20161022073102) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
-  create_table "receipes", force: :cascade do |t|
+  create_table "hashtag_mappings", force: :cascade do |t|
+    t.integer  "tweet_id"
+    t.integer  "hashtag_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json     "content"
-    t.integer  "user_id"
+  end
+
+  create_table "hashtags", force: :cascade do |t|
+    t.text     "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "token_stores", force: :cascade do |t|
@@ -56,6 +50,17 @@ ActiveRecord::Schema.define(version: 20161022073102) do
     t.text     "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "tweets", force: :cascade do |t|
+    t.text     "content"
+    t.integer  "score"
+    t.text     "from"
+    t.text     "to"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "from_id"
+    t.integer  "to_id"
   end
 
   create_table "users", force: :cascade do |t|

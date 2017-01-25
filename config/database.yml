@@ -4,5 +4,5 @@ development:
   database: flock-gfw
   pool: 5
   host: localhost
-  username: baldor
+  username: mohitmunjani
   password: baldor123

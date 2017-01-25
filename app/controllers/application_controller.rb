@@ -49,17 +49,38 @@ class ApplicationController < ActionController::Base
   def permit_params
     params.permit!
     if params[:flockValidationToken]
-      decoded_token = JWT.decode params[:flockValidationToken], "e716b534-55ff-45f4-b662-725ed9e39936", true, { :algorithm => 'HS256' }
+      decoded_token = JWT.decode params[:flockValidationToken], "fb90273c-7bff-4aaf-83de-3722712f2c46", true, { :algorithm => 'HS256' }
       session[:current_user_id] = User.find_by(flock_user_id: decoded_token[0]["userId"]).id rescue nil
     end
     if params[:flockEventToken]
-      decoded_token = JWT.decode params[:flockEventToken], "e716b534-55ff-45f4-b662-725ed9e39936", true, { :algorithm => 'HS256' }
+      decoded_token = JWT.decode params[:flockEventToken], "fb90273c-7bff-4aaf-83de-3722712f2c46", true, { :algorithm => 'HS256' }
       session[:current_user_id] = User.find_by(flock_user_id: decoded_token[0]["userId"]).id rescue nil
     end
   end
 
   def current_user
-    User.find session[:current_user_id] if session[:current_user_id]
+    puts "inside current_user"
+    u = User.find session[:current_user_id] if session[:current_user_id]
+    if u.blank?
+      u = User.find_by(flock_user_id: params["userId"])
+      puts "====="
+      puts u.inspect
+      puts "====="
+    end
+    return u
+  end
+
+  def current_user1
+        puts "inside current_user"
+
+     u = User.find session[:current_user_id] if session[:current_user_id]
+    if u.blank?
+      u = User.find_by(flock_user_id: params["userId"])
+      puts "====="
+      puts u.inspect
+      puts "====="
+    end
+    return u
   end
 
   def gmail_inbound
@@ -126,7 +147,10 @@ class ApplicationController < ActionController::Base
         u.email = "#{params['userId'].split(':')[1]}@flockgfw.com"
         u.password = "User1234"
       end
-      user.create_token_store
+      puts "==="*10
+      puts user.inspect
+      puts "==="*10
+      # user.create_token_store
     when "client.pressButton"
       current_user = User.find_by(flock_user_id: params["userId"])
       if params["buttonId"].include?("calender")
@@ -144,7 +168,11 @@ class ApplicationController < ActionController::Base
         user.send_mail(user.last_message["From"], "Re: #{user.last_message['Subject']}", text.split(" ")[1..-1])
       end
       # {"message"=>{"type"=>"CHAT", "id"=>"00003018-0000-0022-0000-000000c5862b", "to"=>"u:Br1h5szr7skwk1wz", "from"=>"u:auecvebiuce2xcjb", "actor"=>"", "text"=>"reply Cool buddy", "uid"=>"1477129719302-tRXqKC-mh105"}, "name"=>"chat.receiveMessage", "userId"=>"u:auecvebiuce2xcjb"}
-
+    when "client.slashCommand"
+      tweet = params["text"]
+      current_user1.send_to_id(params["chat"], tweet, nil)
+      Tweet.create(content: tweet, )
+      
     end
     # {"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb", "controller"=>"application", "action"=>"flock_events", "application"=>{"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb"}}
 

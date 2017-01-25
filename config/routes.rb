@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   #   get 'products/:id' => 'catalog#view'
    root :to => "application#flock_landing"
   post '/gmail_inbound' => 'application#gmail_inbound'
+  post '/new_tweet' => 'application#new_tweet'
   post '/send_to_telegram' => 'application#send_to_telegram'
   get '/create_event' => 'application#create_event'
   post '/flock_events' => 'application#flock_events'
