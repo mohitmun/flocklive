@@ -27,12 +27,13 @@
             $(this).find(".emoji-reactions span").velocity("transition.bounceUpIn", {
               stagger: 80
             });
+            current_div = this
             isAnimationEnable = 1;
             interVal = setInterval(function() {
               if (isAnimationEnable == 1) {
-                cursorListener(this);
+                cursorListener($(current_div));
               }
-            }, 100);
+            }, 1000);
           }
 
         }, function() {
@@ -40,13 +41,14 @@
         });
 
         function cursorListener(a) {
-          var isHovered = !!$('.emoji-reactions , .actionBox').
+            console.log(a);
+          var isHovered = !!a.find('.emoji-reactions , .actionBox').
           filter(function() {
             return $(this).is(":hover");
           }).length;
           console.log(isHovered);
           if (!isHovered) {
-            $(".emoji-reactions").velocity("transition.fadeOut", {
+            a.find(".emoji-reactions").velocity("transition.fadeOut", {
               delay: 500
             });
             clearInterval(interVal);
