@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get '/drive' => 'application#drive'
   get '/change_visibility' => 'application#change_visibility'
   get '/trends' => 'application#trends'
+  post '/save_reaction' => 'application#save_reaction'
   get '/tweets' => 'application#tweets'
   get '/my_tweets' => 'application#my_tweets'
   get '/replyModal' => 'application#replyModal'

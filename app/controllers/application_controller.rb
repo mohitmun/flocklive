@@ -27,6 +27,10 @@ class ApplicationController < ActionController::Base
     redirect_to my_tweets_path
   end
 
+  def save_reaction
+    render json: {status: 200}
+  end
+
   def tweets
     @tweets = Tweet.viewable(@current_user.teamId)
     hashtag = Hashtag.find_by(content: params[:hashtag])

@@ -7,14 +7,32 @@
   .listitems
     - Hashtag.all.each do |hashtag|
       %div.hashtag{data: {position: hashtag.tweets.count}}
-        %b= link_to "##{hashtag.content} (#{hashtag.tweets.count})", tweets_path(hashtag: hashtag.content)    
-        = render partial: "welcome/reactions"
+        %div{style: "display: inline-block;font-size:20px; font-weight: 500;"}= link_to "##{hashtag.content} (#{hashtag.tweets.count})", tweets_path(hashtag: hashtag.content)    
+        = render partial: "welcome/reactions", locals: {id: hashtag.id, type: "Hashtag"}
 %script 
   :plain
     $(".listitems .hashtag").sort(sort_li).appendTo('.listitems');
     function sort_li(a, b){
         return ($(b).data('position')) > ($(a).data('position')) ? 1 : -1;    
     }
+
+    $(document).on("click", ".reaction", function() {
+      // body...
+      type = $(this).parents(".actionBox").data("type");
+      id = $(this).parents(".actionBox").data("id");
+       $.ajax({
+        url: "/save_reaction",
+        type: 'POST',
+        data: {"type" : type, "id" : id},
+        success: function(data){
+          console.log("wohhoo");
+        },
+        error: function(data){
+
+        }
+      });
+      console.log("reaction clicked:" + $(this).find(".react").data("type"));
+    });
   / %input.form-control#formGroupExampleInput{"type"=>"text", "placeholder"=>"Search Drive", style: "border-color: #0abe50;"}
   / %div{style: "margin-top: 20px;"}
   /   - limit = 100

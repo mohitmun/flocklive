@@ -41,46 +41,32 @@
       i {
         content: '';
         display: inline-block;
-        height: 14px;
-        margin: 0 6px -3px 0;
-        width: 14px;
+        height: 18px;
+        /*margin: 0 6px -3px 0;*/
+        width: 18px;
       }
 
       .like {
-        background-image: url(https://i.imgsafe.org/0616248.png);
+        background-image: url('/logo18.png');
         background-repeat: no-repeat;
-        background-size: 500px 488px;
-        background-position: -277px -446px
-      }
-
-      .comment {
-        background-image: url(https://i.imgsafe.org/0616248.png);
-        background-repeat: no-repeat;
-        background-size: 500px 488px;
-        background-position: -262px -446px
-      }
-
-      .share {
-        background-image: url(https://i.imgsafe.org/0616248.png);
-        background-repeat: no-repeat;
-        background-size: 500px 488px;
-        background-position: -322px -446px;
+        /*background-size: 500px 488px;*/
+        /*background-position: -277px -446px*/
       }
 
       .actionBox {
         position: relative;
         background: #fff;
-        padding: 10px;
+        /*padding: 10px;*/
         display: inline-block;
       }
 
       .actionBox span {
         color: #7f7f7f;
         display: inline-block;
-        font-size: 12px;
-        font-weight: bold;
-        line-height: 14px;
-        padding: 4px 4px 4px 0;
+        /*font-size: 12px;*/
+        /*font-weight: bold;*/
+        /*line-height: 14px;*/
+        /*padding: 4px 0px 4px 0;*/
         cursor: pointer;
       }
 

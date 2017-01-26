@@ -41,12 +41,11 @@
         });
 
         function cursorListener(a) {
-            console.log(a);
           var isHovered = !!a.find('.emoji-reactions , .actionBox').
           filter(function() {
             return $(this).is(":hover");
           }).length;
-          console.log(isHovered);
+          // console.log(isHovered);
           if (!isHovered) {
             a.find(".emoji-reactions").velocity("transition.fadeOut", {
               delay: 500

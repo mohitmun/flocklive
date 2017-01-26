@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  reaction_type: MyText
+  item_id: 1
+  item_type: MyText
+
+two:
+  reaction_type: MyText
+  item_id: 1
+  item_type: MyText

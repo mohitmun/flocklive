@@ -1,36 +1,34 @@
-.actionBox
+.actionBox{data: {type: type, id: id}}
   %span.showEmotions
-    %a
-      %i.like>
-      Like
+    %i.like>      
     .emoji-reactions
       %span
         .reaction
-          %i.react.like
+          %i.react.like{data: {type:"like"}}
         .text
           %div Like
       %span
         .reaction
-          %i.react.love
+          %i.react.love{data: {type:"love"}}
         .text
           %div Love
       %span
         .reaction
-          %i.react.haha
+          %i.react.haha{data: {type:"haha"}}
         .text
           %div Haha
       %span
         .reaction
-          %i.react.sorry
+          %i.react.sorry{data: {type:"sorry"}}
         .text
           %div Sorry
       %span
         .reaction
-          %i.react.anger
+          %i.react.anger{data: {type:"anger"}}
         .text
           %div Angry
       %span
         .reaction
-          %i.react.dislike
+          %i.react.dislike{data: {type:"dislike"}}
         .text
           %div Dislike
