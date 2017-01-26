@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
-   root :to => "application#flock_landing"
+   root :to => "application#tweets"
   post '/gmail_inbound' => 'application#gmail_inbound'
   post '/new_tweet' => 'application#new_tweet'
   post '/send_to_telegram' => 'application#send_to_telegram'

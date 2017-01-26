@@ -6,6 +6,8 @@ class Tweet < ActiveRecord::Base
   store_accessor :json_store, :message_id, :chat_id, :visibility, :teamId
 
   scope :viewable, -> (teamId) {where("json_store ->> 'visibility' = ? AND json_store ->> 'teamId' = ?", "flock", "#{teamId}")}
+
+  
   def after_create
     hashtags_string = content.scan(/#\S+/)
     hashtags_string.each do |hashtag|

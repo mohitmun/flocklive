@@ -111,7 +111,7 @@ class ApplicationController < ActionController::Base
       puts "====="
     end
     @current_user = u
-    if u.teamId.blank? && u.profileImage.blank?
+    if u && u.teamId.blank? && u.profileImage.blank?
       info = u.get_info
       u.teamId = info["teamId"]
       u.profileImage = info["profileImage"]
