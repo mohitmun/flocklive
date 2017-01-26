@@ -3,13 +3,17 @@
 /   border-color: #FF0000;
 /   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
 / }
-%div{style: "width:100%; height:100%; color: #0abe50;" }
+%div{style: "font-size: 15px;width:100%; height:100%;"}
   .listitems
-    - Hashtag.all.each do |hashtag|
-      %li{data: {position: hashtag.tweets.count}}= link_to "#{hashtag.content} (#{hashtag.tweets.count})", tweets_path(hashtag: hashtag.content)    
+    - no_tweets = true
+    - @tweets.each do |tweet|
+      - no_tweets = false
+      %div.tweet{data_position: tweet.score, style: "padding-top:10px;"}= raw tweet.html_view
+    - if no_tweets
+      %div No tweets
 %script 
   :plain
-    $(".listitems li").sort(sort_li).appendTo('.listitems');
+    $(".listitems .tweet").sort(sort_li).appendTo('.listitems');
     function sort_li(a, b){
         return ($(b).data('position')) > ($(a).data('position')) ? 1 : -1;    
     }

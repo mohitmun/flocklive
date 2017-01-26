@@ -15,6 +15,26 @@ class ApplicationController < ActionController::Base
     render "welcome/drive"
   end
 
+  def trends
+    @query = params["query"] || ""
+    render "welcome/trends"
+  end
+
+  def tweets
+    hashtag = Hashtag.find_by(content: params[:hashtag])
+    if !hashtag.blank?
+      @title = "##{hashtag.content}"
+    end
+    @tweets = hashtag.tweets rescue Tweet.all
+    render "welcome/tweets"
+  end
+
+  def my_tweets
+    # hashtag = Hashtag.find_by(content: params[:hashtag])
+    @tweets = Tweet.where(from_id: current_user1.flock_user_id) rescue []
+    render "welcome/tweets"
+  end
+
   def create_event
     current_user.schedule(params[:summary], params[:start], params[:end])
     render json: {message: "ok"}, status: 200
@@ -168,15 +188,38 @@ class ApplicationController < ActionController::Base
         user.send_mail(user.last_message["From"], "Re: #{user.last_message['Subject']}", text.split(" ")[1..-1])
       end
       # {"message"=>{"type"=>"CHAT", "id"=>"00003018-0000-0022-0000-000000c5862b", "to"=>"u:Br1h5szr7skwk1wz", "from"=>"u:auecvebiuce2xcjb", "actor"=>"", "text"=>"reply Cool buddy", "uid"=>"1477129719302-tRXqKC-mh105"}, "name"=>"chat.receiveMessage", "userId"=>"u:auecvebiuce2xcjb"}
+    when "client.messageAction"
+      # {"chat"=>"u:Br1h5szr7skwk1wz", "name"=>"client.messageAction", "chatName"=>"HackTest2 Bot", "userName"=>"mohit munjani", "userId"=>"u:auecvebiuce2xcjb", "messageUids"=>["1485427478629-R29S8w-apollo-z6"], "controller"=>"application", "action"=>"flock_events", "application"=>{"chat"=>"u:Br1h5szr7skwk1wz", "name"=>"client.messageAction", "chatName"=>"HackTest2 Bot", "userName"=>"mohit munjani", "userId"=>"u:auecvebiuce2xcjb", "messageUids"=>["1485427478629-R29S8w-apollo-z6"]}}
+      @rendered = true
+      action_message = ""
+      message_id = params["messageUids"][0]
+      t = Tweet.where("json_store ->> 'message_id' = ?", message_id).last
+      message = current_user1.fetch_message(params["chat"], message_id)
+      if t.blank?
+        Tweet.create(content: message["text"], to_id: message["to"], from_id: message["from"], chat_id: params["chat"], public_tweet: false, message_id: message_id)
+        action_message = "Anyone in team can view this message Now. Press again to make it viewable across all Flock users"
+      elsif !t.public_tweet
+        t.public_tweet = true
+        t.save
+        action_message = "All users on Flock can view this message Now. Press again to make it private to this chat"
+      else
+        t.delete
+        action_message = "Message is private now. Press again to make it viewable to your team"
+      end
+      render json: {text: action_message}
     when "client.slashCommand"
       tweet = params["text"]
-      current_user1.send_to_id(params["chat"], tweet, nil)
-      Tweet.create(content: tweet, )
-      
+      t = Tweet.create(public_tweet: false, content: tweet, sender_id: params["userId"], from: params["userName"], chat_id: params["chat"])
+      response = current_user1.send_to_id(params["chat"], tweet_ml, nil)
+      uid = JSON.parse(response)["uid"]
+      t.message_id = uid
+      t.save
     end
     # {"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb", "controller"=>"application", "action"=>"flock_events", "application"=>{"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb"}}
 
-    render json: {message: "ok"}, status: 200
+    if !@rendered
+      render json: {message: "ok"}, status: 200
+    end
   end
 
   def connect_google

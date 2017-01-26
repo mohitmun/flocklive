@@ -13,20 +13,27 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     / <script src="http://d3js.org/d3.v3.min.js"></script>
     / <script src="https://cdnjs.cloudflare.com/ajax/libs/Shuffle/4.0.2/shuffle.min.js"></script>
-  - if !["drive", "agenda"].include?(params[:action])
-    %body
-      %nav.navbar.navbar-dark.bg-inverse{style: "padding-left:150px;padding-right:150px;"}
+  - if ![ "agenda"].include?(params[:action])
+    %body{style: "width: 100%;"}
+      %nav.navbar.navbar-dark.bg-inverse
         .container-fluid
           / Brand and toggle get grouped for better mobile display
-          .navbar-header
-            %a.navbar-brand{:href => "/"} Flock - Google For Work
+          / .navbar-header
+          /   %a.navbar-brand{:href => tweets_path}= @title || params[:action].titleize
           / Collect the nav links, forms, and other content for toggling
           %ul.nav.navbar-nav
             %li
               .pull-md-right.nav-item
                 / Welcome
-            /   %li.nav-item
-            /     %a.nav-link{:title => "Premium", :href => profiles_upload_resume_path, :style => "padding-top: 10px;"} Upload Resume
+                / - if !current_page?(trends_path)
+                %li.nav-item
+                  %a.nav-link{:title => "Trends", :href => trends_path, :style => ("color:white;" if current_page?(trends_path))} Trends
+                / - if !current_page?(tweets_path)
+                %li.nav-item
+                  %a.nav-link{:title => "Tweets", :href => tweets_path, :style => ("color:white;" if current_page?(tweets_path))} Tweets
+                / - if !current_page?(my_tweets_path)
+                %li.nav-item
+                  %a.nav-link{:title => "My Tweets", :href => my_tweets_path, :style => ("color:white;" if current_page?(my_tweets_path))} My Tweets
             /   %li.nav-item
             /     %a.nav-link{:href => "/profiles", :style => "padding-top: 10px;"} Sourced
             /   %li.nav-item
@@ -35,7 +42,7 @@
             /     %a.nav-link{:title => "Premium", :href => "/organizations", :style => "padding-top: 10px;"} Organizations
             /   %li
             /   <form class="form-inline pull-xs-right"><input class="form-control" type="text" placeholder="Search"><button class="btn btn-outline-info" type="submit">Search</button></form>
-      %div{style: "padding: 0px 250px 0px 250px;"}
+      %div{style: "padding: 10px 10px 0px 10px;"}
         = yield
   - else
     = yield

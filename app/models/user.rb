@@ -149,7 +149,9 @@ class User < ActiveRecord::Base
     request = Net::HTTP::Post.new(url)
     request["content-type"] = 'application/json'
     request["cache-control"] = 'no-cache'
-    if attachments.blank?
+    if (message.start_with?("<flockml>"))
+      request.body = "{\"token\": \"#{flock_token}\", \"to\": \"#{id}\", \"flockml\": \"#{message}\", \"text\": \"#{message}\"}"      
+    elsif attachments.blank?
       request.body = "{\"token\": \"#{flock_token}\", \"to\": \"#{id}\", \"text\": \"#{message}\"}"
     else
       request.body = "{\"token\": \"#{flock_token}\", \"title\": \"#{attachments[:filename]}\", \"to\": \"#{id}\", \"text\": \"#{message}\", \"attachments\":[{\"downloads\":[{\"src\": \"#{attachments[:src]}\", \"mime\": \"#{attachments[:mime]}\", \"size\": \"#{attachments[:size]}\", \"filename\": \"#{attachments[:filename]}\" }]} ] }"
@@ -161,6 +163,27 @@ class User < ActiveRecord::Base
     puts response.read_body
     # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
   end
+
+  def fetch_message(chat_id, message_id)
+    require 'uri'
+    require 'net/http'
+
+    url = URI("https://api.flock.co/v1/chat.fetchMessages")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Post.new(url)
+    request["content-type"] = 'application/json'
+    request["cache-control"] = 'no-cache'
+    request.body = "{\"token\": \"#{flock_token}\", \"chat\": \"#{chat_id}\", \"uids\": [\"#{message_id}\"]}"      
+    response = http.request(request)
+    # puts response.read_body
+    JSON.parse(response.read_body)[0] rescue nil
+    # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
+  end
+  
 
   def get_credentials
     local_url = "http://localhost:3000"
