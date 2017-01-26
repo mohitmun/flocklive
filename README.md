@@ -7,3 +7,15 @@ Hashman adds hashtag support to flock. It lets others see what you are talking a
 ##Features:
   - Trends (see trends across team and all flock users)
   - Manage visibility of message (flock/your team/ private)
+
+
+## Steps to run
+Update config/database.yml with database name and user credentials
+
+```
+$rake db:create
+$rake db:migrate
+$bundle install
+$rails s
+```
+
