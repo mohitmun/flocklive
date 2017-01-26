@@ -7,7 +7,7 @@ class Tweet < ActiveRecord::Base
 
   scope :viewable, -> (teamId) {where("json_store ->> 'visibility' = ? AND json_store ->> 'teamId' = ?", "flock", "#{teamId}")}
 
-  
+
   def after_create
     hashtags_string = content.scan(/#\S+/)
     hashtags_string.each do |hashtag|
@@ -60,6 +60,14 @@ class Tweet < ActiveRecord::Base
       self.visibility = "team"
     end
     self.save
+  end
+
+  def from_info
+    
+  end
+
+  def to_info
+    
   end
 
 

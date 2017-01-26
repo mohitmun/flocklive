@@ -8,6 +8,7 @@
     - Hashtag.all.each do |hashtag|
       %div.hashtag{data: {position: hashtag.tweets.count}}
         %b= link_to "##{hashtag.content} (#{hashtag.tweets.count})", tweets_path(hashtag: hashtag.content)    
+        = render partial: "welcome/reactions"
 %script 
   :plain
     $(".listitems .hashtag").sort(sort_li).appendTo('.listitems');

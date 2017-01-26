@@ -216,11 +216,11 @@ class ApplicationController < ActionController::Base
       message = current_user1.fetch_message(params["chat"], message_id)
       if t.blank?
         Tweet.create(content: message["text"], to_id: message["to"], from_id: message["from"], chat_id: params["chat"], visibility: "team", message_id: message_id)
-        action_message = "Anyone in team can view this message Now. Press again to make it viewable across all Flock users"
+        action_message = "Visible to your team. Press again to make visible to all Flock users"
       elsif t.visibility == "team"
         t.visibility = "flock"
         t.save
-        action_message = "All users on Flock can view this message Now. Press again to make it private to this chat"
+        action_message = "Visible to across all teams on Flock. Press again to make it private to this chat"
       elsif t.visibility == "flock"
         t.visibility = "private"
         t.save

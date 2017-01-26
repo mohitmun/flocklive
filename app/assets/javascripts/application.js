@@ -14,3 +14,45 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+
+        var isAnimationEnable = 0;
+      var interVal;
+
+      $(document).ready(function() {
+
+        $(".showEmotions").hover(function() {
+
+          if (isAnimationEnable == 0) {
+            $(this).find(".emoji-reactions").show().css('opacity', '1');
+            $(this).find(".emoji-reactions span").velocity("transition.bounceUpIn", {
+              stagger: 80
+            });
+            isAnimationEnable = 1;
+            interVal = setInterval(function() {
+              if (isAnimationEnable == 1) {
+                cursorListener(this);
+              }
+            }, 100);
+          }
+
+        }, function() {
+
+        });
+
+        function cursorListener(a) {
+          var isHovered = !!$('.emoji-reactions , .actionBox').
+          filter(function() {
+            return $(this).is(":hover");
+          }).length;
+          console.log(isHovered);
+          if (!isHovered) {
+            $(".emoji-reactions").velocity("transition.fadeOut", {
+              delay: 500
+            });
+            clearInterval(interVal);
+            isAnimationEnable = 0;
+
+          }
+        }
+
+      });
