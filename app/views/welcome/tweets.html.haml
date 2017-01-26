@@ -8,15 +8,21 @@
     - no_tweets = true
     - @tweets.each do |tweet|
       - no_tweets = false
-      %div.tweet{data_position: tweet.score, style: "padding-top:10px;"}= raw tweet.html_view
+      %div
+        .tweet{data_position: tweet.score, style: "padding-top:10px;"}
+          = raw tweet.html_view
+          - if tweet.is_mine?(@current_user.flock_user_id)
+            %div{style: "font-size: 12px;"}
+              %span{style: "opacity: 0.4;"}= tweet.visibility_message
+              %span{style: "opacity: 1"}= link_to "change", change_visibility_path(tweet_id: tweet.id)
     - if no_tweets
       %div No tweets
 %script 
   :plain
-    $(".listitems .tweet").sort(sort_li).appendTo('.listitems');
-    function sort_li(a, b){
-        return ($(b).data('position')) > ($(a).data('position')) ? 1 : -1;    
-    }
+    / $(".listitems .tweet").sort(sort_li).appendTo('.listitems');
+    / function sort_li(a, b){
+    /     return ($(b).data('position')) > ($(a).data('position')) ? 1 : -1;    
+    / }
   / %input.form-control#formGroupExampleInput{"type"=>"text", "placeholder"=>"Search Drive", style: "border-color: #0abe50;"}
   / %div{style: "margin-top: 20px;"}
   /   - limit = 100

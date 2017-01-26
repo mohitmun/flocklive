@@ -20,18 +20,26 @@ class ApplicationController < ActionController::Base
     render "welcome/trends"
   end
 
+  def change_visibility
+    tweet = Tweet.find(params[:tweet_id]) rescue nil
+    # tweet.delete rescue nil
+    tweet.next_visibility rescue nil
+    redirect_to my_tweets_path
+  end
+
   def tweets
+    @tweets = Tweet.viewable(@current_user.teamId)
     hashtag = Hashtag.find_by(content: params[:hashtag])
     if !hashtag.blank?
       @title = "##{hashtag.content}"
     end
-    @tweets = hashtag.tweets rescue Tweet.all
+    @tweets = hashtag.tweets.viewable(@current_user.teamId) rescue @tweets
     render "welcome/tweets"
   end
 
   def my_tweets
     # hashtag = Hashtag.find_by(content: params[:hashtag])
-    @tweets = Tweet.where(from_id: current_user1.flock_user_id) rescue []
+    @tweets = Tweet.where(from_id: current_user1.flock_user_id).order(:created_at => :desc) rescue []
     render "welcome/tweets"
   end
 
@@ -76,6 +84,8 @@ class ApplicationController < ActionController::Base
       decoded_token = JWT.decode params[:flockEventToken], "fb90273c-7bff-4aaf-83de-3722712f2c46", true, { :algorithm => 'HS256' }
       session[:current_user_id] = User.find_by(flock_user_id: decoded_token[0]["userId"]).id rescue nil
     end
+    current_user1
+
   end
 
   def current_user
@@ -91,7 +101,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user1
-        puts "inside current_user"
+    puts "inside current_user"
 
      u = User.find session[:current_user_id] if session[:current_user_id]
     if u.blank?
@@ -99,6 +109,13 @@ class ApplicationController < ActionController::Base
       puts "====="
       puts u.inspect
       puts "====="
+    end
+    @current_user = u
+    if u.teamId.blank? && u.profileImage.blank?
+      info = u.get_info
+      u.teamId = info["teamId"]
+      u.profileImage = info["profileImage"]
+      u.save
     end
     return u
   end
@@ -160,6 +177,8 @@ class ApplicationController < ActionController::Base
     puts params.inspect
     puts "="*100
     case params["name"]
+    when "app.uninstall"
+      @current_user.delete
     when "app.install"
       # localhost:3000/flock_events?token=98ac35f0-7b3e-4f0c-97df-e43614cce558&name=app.install&userId="u:auecvebiuce2xcjb"
       user = User.find_or_create_by(flock_user_id: params["userId"]) do |u|
@@ -196,20 +215,21 @@ class ApplicationController < ActionController::Base
       t = Tweet.where("json_store ->> 'message_id' = ?", message_id).last
       message = current_user1.fetch_message(params["chat"], message_id)
       if t.blank?
-        Tweet.create(content: message["text"], to_id: message["to"], from_id: message["from"], chat_id: params["chat"], public_tweet: false, message_id: message_id)
+        Tweet.create(content: message["text"], to_id: message["to"], from_id: message["from"], chat_id: params["chat"], visibility: "team", message_id: message_id)
         action_message = "Anyone in team can view this message Now. Press again to make it viewable across all Flock users"
-      elsif !t.public_tweet
-        t.public_tweet = true
+      elsif t.visibility == "team"
+        t.visibility = "flock"
         t.save
         action_message = "All users on Flock can view this message Now. Press again to make it private to this chat"
-      else
-        t.delete
+      elsif t.visibility == "flock"
+        t.visibility = "private"
+        t.save
         action_message = "Message is private now. Press again to make it viewable to your team"
       end
       render json: {text: action_message}
     when "client.slashCommand"
       tweet = params["text"]
-      t = Tweet.create(public_tweet: false, content: tweet, sender_id: params["userId"], from: params["userName"], chat_id: params["chat"])
+      t = Tweet.create(visibility: "team", content: tweet, sender_id: params["userId"], from: params["userName"], chat_id: params["chat"])
       response = current_user1.send_to_id(params["chat"], tweet_ml, nil)
       uid = JSON.parse(response)["uid"]
       t.message_id = uid

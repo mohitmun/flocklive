@@ -3,8 +3,9 @@ class Tweet < ActiveRecord::Base
   after_create :after_create
   has_many :hashtag_mappings
   has_many :hashtags, :through => :hashtag_mappings, :source => :hashtag
-  store_accessor :json_store, :message_id, :chat_id, :public_tweet
+  store_accessor :json_store, :message_id, :chat_id, :visibility, :teamId
 
+  scope :viewable, -> (teamId) {where("json_store ->> 'visibility' = ? AND json_store ->> 'teamId' = ?", "flock", "#{teamId}")}
   def after_create
     hashtags_string = content.scan(/#\S+/)
     hashtags_string.each do |hashtag|
@@ -31,5 +32,33 @@ class Tweet < ActiveRecord::Base
     end
     return root
   end
+
+  def is_mine?(my_id)
+    from_id == my_id
+  end
+
+  def visibility_message
+    case visibility
+    when "team"
+      "Anyone on Team"
+    when "flock"
+      "Anyone on Flock"
+    when "private", nil
+      "Private to this chat"
+    end
+  end
+  
+  def next_visibility
+    case visibility
+    when "team"
+      self.visibility = "flock"
+    when "flock"
+      self.visibility = "private"
+    when "private", nil
+      self.visibility = "team"
+    end
+    self.save
+  end
+
 
 end

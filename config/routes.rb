@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get '/flock_landing' => 'application#flock_landing'
   get '/file' => 'application#file'
   get '/drive' => 'application#drive'
+  get '/change_visibility' => 'application#change_visibility'
   get '/trends' => 'application#trends'
   get '/tweets' => 'application#tweets'
   get '/my_tweets' => 'application#my_tweets'

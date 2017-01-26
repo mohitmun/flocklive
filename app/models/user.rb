@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :flock_token, message: "must be unique"
   has_one :token_store
   
-  store_accessor :content, :last_message
+  store_accessor :content, :last_message, :teamId, :profileImage
 
   def init
     self.content ||= {}
@@ -183,6 +183,71 @@ class User < ActiveRecord::Base
     JSON.parse(response.read_body)[0] rescue nil
     # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
   end
+
+  def get_roster
+    require 'uri'
+    require 'net/http'
+
+    url = URI("https://api.flock.co/v1/roster.listContacts")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Post.new(url)
+    request["content-type"] = 'application/json'
+    request["cache-control"] = 'no-cache'
+    request.body = "{\"token\": \"#{flock_token}\"}"      
+    response = http.request(request)
+    # puts response.read_body
+    JSON.parse(response.read_body)
+    # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
+  end
+  
+  def get_public_profile(userId)
+    require 'uri'
+    require 'net/http'
+
+    url = URI("https://api.flock.co/v1/users.getPublicProfile")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Post.new(url)
+    request["content-type"] = 'application/json'
+    request["cache-control"] = 'no-cache'
+    request.body = "{\"token\": \"#{flock_token}\", \"userId\": \"#{userId}\"}"      
+    response = http.request(request)
+    # puts response.read_body
+    JSON.parse(response.read_body)
+    # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
+  end
+
+  def get_info
+    require 'uri'
+    require 'net/http'
+
+    url = URI("https://api.flock.co/v1/users.getInfo")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Post.new(url)
+    request["content-type"] = 'application/json'
+    request["cache-control"] = 'no-cache'
+    request.body = "{\"token\": \"#{flock_token}\"}"      
+    response = http.request(request)
+    # puts response.read_body
+    puts "*"*50
+    puts "getting info token:#{flock_token} #{response.read_body}"
+    puts "*"*50
+    JSON.parse(response.read_body)
+    # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
+  end
+
+
   
 
   def get_credentials
