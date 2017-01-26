@@ -5,7 +5,7 @@ class Tweet < ActiveRecord::Base
   has_many :hashtags, :through => :hashtag_mappings, :source => :hashtag
   store_accessor :json_store, :message_id, :chat_id, :visibility, :teamId
 
-  scope :viewable, -> (teamId) {where("json_store ->> 'visibility' = ? AND json_store ->> 'teamId' = ?", "flock", "#{teamId}")}
+  scope :viewable, -> (teamId) {where("json_store ->> 'visibility' = ? OR (json_store ->> 'teamId' = ? AND json_store ->> 'visibility' = ?)", "flock", "#{teamId}", "team")}
 
 
   def after_create
@@ -16,20 +16,20 @@ class Tweet < ActiveRecord::Base
   end
 
   def flock_ml
-    # <flockml> click <action id='act1' type='openWidget' url='https://15dafcac.ngrok.io/tweets?hashtag=adas' desktopType='sidebar' mobileType='modal'>here</action> to launch a widget. </flockml>
+    # <flockml> click <action id='act1' type='openWidget' url='https://83ccbc32.ngrok.io/tweets?hashtag=adas' desktopType='sidebar' mobileType='modal'>here</action> to launch a widget. </flockml>
     root = content
     hashtags.each do |h|
-      hashtag_link = "<action id='act1' type='openWidget' url='https://15dafcac.ngrok.io/tweets?hashtag=#{h.content}' desktopType='sidebar' mobileType='modal'>##{h.content}</action>"
+      hashtag_link = "<action id='act1' type='openWidget' url='https://83ccbc32.ngrok.io/tweets?hashtag=#{h.content}' desktopType='sidebar' mobileType='modal'>##{h.content}</action>"
       root = root.gsub("##{h.content}", hashtag_link)
     end
     "<flockml> #{root} </flockml>"
   end
 
   def html_view
-    # <flockml> click <action id='act1' type='openWidget' url='https://15dafcac.ngrok.io/tweets?hashtag=adas' desktopType='sidebar' mobileType='modal'>here</action> to launch a widget. </flockml>
+    # <flockml> click <action id='act1' type='openWidget' url='https://83ccbc32.ngrok.io/tweets?hashtag=adas' desktopType='sidebar' mobileType='modal'>here</action> to launch a widget. </flockml>
     root = content
     hashtags.each do |h|
-      hashtag_link = "<a href='https://15dafcac.ngrok.io/tweets?hashtag=#{h.content}'>##{h.content}</a>"
+      hashtag_link = "<a href='https://83ccbc32.ngrok.io/tweets?hashtag=#{h.content}'>##{h.content}</a>"
       root = root.gsub("##{h.content}", hashtag_link)
     end
     return root

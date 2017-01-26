@@ -9,6 +9,7 @@
 %script 
   :plain
     run_sort();
+    start_react();
     $(document).on("click", ".reaction", function() {
       // body...
       type = $(this).parents(".actionBox").data("type");

@@ -161,6 +161,7 @@ class User < ActiveRecord::Base
     puts "===="
     response = http.request(request)
     puts response.read_body
+    return response.read_body
     # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
   end
 
