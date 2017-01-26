@@ -5,27 +5,24 @@
 / }
 %div{style: "width:100%; height:100%;" }
   .listitems
-    - Hashtag.all.each do |hashtag|
-      %div.hashtag{data: {position: hashtag.tweets.count}}
-        %div{style: "display: inline-block;font-size:20px; font-weight: 500;"}= link_to "##{hashtag.content} (#{hashtag.tweets.count})", tweets_path(hashtag: hashtag.content)    
-        = render partial: "welcome/reactions", locals: {id: hashtag.id, type: "Hashtag"}
+    = render partial: "welcome/trends"
 %script 
   :plain
-    $(".listitems .hashtag").sort(sort_li).appendTo('.listitems');
-    function sort_li(a, b){
-        return ($(b).data('position')) > ($(a).data('position')) ? 1 : -1;    
-    }
-
+    run_sort();
     $(document).on("click", ".reaction", function() {
       // body...
       type = $(this).parents(".actionBox").data("type");
       id = $(this).parents(".actionBox").data("id");
+      reaction_type = $(this).find(".react").data("type");
        $.ajax({
         url: "/save_reaction",
         type: 'POST',
-        data: {"type" : type, "id" : id},
+        data: {"type" : type, "id" : id, "reaction_type": reaction_type},
         success: function(data){
-          console.log("wohhoo");
+          console.log("wohhoo:" +data);
+          $(".listitems").html(data);
+          start_react();
+          run_sort();
         },
         error: function(data){
 

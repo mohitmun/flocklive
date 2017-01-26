@@ -15,45 +15,52 @@
 //= require turbolinks
 //= require_tree .
 
-        var isAnimationEnable = 0;
-      var interVal;
-
-      $(document).ready(function() {
-
-        $(".showEmotions").hover(function() {
-
-          if (isAnimationEnable == 0) {
-            $(this).find(".emoji-reactions").show().css('opacity', '1');
-            $(this).find(".emoji-reactions span").velocity("transition.bounceUpIn", {
-              stagger: 80
-            });
-            current_div = this
-            isAnimationEnable = 1;
-            interVal = setInterval(function() {
-              if (isAnimationEnable == 1) {
-                cursorListener($(current_div));
+     function start_react(){  var isAnimationEnable = 0;
+            var interVal;
+      
+            $(document).ready(function() {
+      
+              $(".showEmotions").hover(function() {
+      
+                if (isAnimationEnable == 0) {
+                  $(this).find(".emoji-reactions").show().css('opacity', '1');
+                  $(this).find(".emoji-reactions span").velocity("transition.bounceUpIn", {
+                    stagger: 80
+                  });
+                  current_div = this
+                  isAnimationEnable = 1;
+                  interVal = setInterval(function() {
+                    if (isAnimationEnable == 1) {
+                      cursorListener($(current_div));
+                    }
+                  }, 1000);
+                }
+      
+              }, function() {
+      
+              });
+      
+              function cursorListener(a) {
+                var isHovered = !!a.find('.emoji-reactions , .actionBox').
+                filter(function() {
+                  return $(this).is(":hover");
+                }).length;
+                // console.log(isHovered);
+                if (!isHovered) {
+                  a.find(".emoji-reactions").velocity("transition.fadeOut", {
+                    delay: 500
+                  });
+                  clearInterval(interVal);
+                  isAnimationEnable = 0;
+      
+                }
               }
-            }, 1000);
-          }
+      
+            });}
+            start_react();
 
-        }, function() {
 
-        });
-
-        function cursorListener(a) {
-          var isHovered = !!a.find('.emoji-reactions , .actionBox').
-          filter(function() {
-            return $(this).is(":hover");
-          }).length;
-          // console.log(isHovered);
-          if (!isHovered) {
-            a.find(".emoji-reactions").velocity("transition.fadeOut", {
-              delay: 500
-            });
-            clearInterval(interVal);
-            isAnimationEnable = 0;
-
-          }
-        }
-
-      });
+           function run_sort(){$(".listitems .hashtag").sort(sort_li).appendTo('.listitems');
+        function sort_li(a, b){
+            return ($(b).data('position')) > ($(a).data('position')) ? 1 : -1;    
+        }}

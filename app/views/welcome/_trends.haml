@@ -1,0 +1,12 @@
+- Hashtag.all.each do |hashtag|
+  %div.hashtag{data: {position: hashtag.tweets.count}}
+    %div{style: "display: inline-block;font-size:20px; font-weight: 500;"}= link_to "##{hashtag.content} (#{hashtag.tweets.count})", tweets_path(hashtag: hashtag.content)    
+    = render partial: "welcome/reactions", locals: {id: hashtag.id, type: "Hashtag"}
+    %div
+      - reaction_types = hashtag.reaction_types
+      - lol = false
+      - reaction_types.uniq.each do |reaction|
+        .reaction_s{style: "display: inline-block;"}
+          .react_s{class: "#{reaction}_s" ,style: ("margin-left: 12px" if lol), data: {type:reaction}}
+            %span{style: "padding-left: 16px"}= reaction_types.count(reaction)
+        - lol = true

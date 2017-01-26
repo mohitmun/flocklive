@@ -125,6 +125,19 @@
         background-image: url(https://i.imgsafe.org/c505d7a.png);
         background-size: 48px 384px;
       }
+      .reaction_s .react_s {
+        display: block;
+        height: 15px;
+        image-rendering: crisp-edges;
+        line-height: 1;
+        width: 15px;
+        background-image: url(https://i.imgsafe.org/c505d7a.png);
+        background-size: 15px 120px;
+      }
+
+      .react_s.like_s {
+        background-position: 0 -165px;
+      }
 
       .react.like {
         background-position: 0 -144px;
@@ -133,26 +146,44 @@
       .react.love {
         background-position: 0 -192px;
       }
+.react_s.love_s {
+        background-position: 0 -60px;
+      }
 
       .react.haha {
         background-position: 0 -96px;
+      }
+      .react_s.haha_s {
+        background-position: 0 -150px;
       }
 
       .react.wow {
         background-position: 0 -288px;
       }
 
+      .react_s.wow_s {
+        background-position: 0 -90px;
+      }
+
       .react.sorry {
         background-position: 0 -240px;
+      }
+.react_s.sorry_s {
+        background-position: 0 -75px;
       }
 
       .react.anger {
         background-position: 0 0;
       }
+      .react_s.anger_s {
+        background-position: 0 -120px;
+      }
 
       .react.dislike {
-        background-position: 0 -144px;
-        transform: rotate(180deg);
+        background-position: 0 -48px;
+      }
+      .react_s.dislike_s {
+        background-position: 0 -15px;
       }
 
       .emoji-reactions span .text {

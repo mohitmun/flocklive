@@ -28,7 +28,12 @@ class ApplicationController < ActionController::Base
   end
 
   def save_reaction
-    render json: {status: 200}
+    Reaction.create(reaction_type: params[:reaction_type], item_type: params[:type], item_id: params[:id])
+    if params[:type] == "Hashtag"
+      render partial: "welcome/trends"
+    else
+      render partial: "welcome/tweets"
+    end
   end
 
   def tweets
