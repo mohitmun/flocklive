@@ -120,11 +120,18 @@ class ApplicationController < ActionController::Base
       puts "====="
     end
     @current_user = u
-    if u && u.teamId.blank? && u.profileImage.blank?
+    if u && (u.teamId.blank? || u.profileImage.blank? || u.firstName.blank?)
       info = u.get_info
       u.teamId = info["teamId"]
       u.profileImage = info["profileImage"]
+      u.firstName = info["firstName"]
+      u.lastName = info["lastName"]
       u.save
+      roster = u.get_roster
+      roster.each do |roster_item|
+        temp = User.create(firstName: roster_item["firstName"], lastName: roster_item["lastName"], profileImage: roster_item["profileImage"], flock_user_id: roster_item["id"], password: "User1234", email: "#{roster_item['id'].split(':')[1]}@flockgfw.com")
+        puts "#{temp.errors.messages.inspect}"
+      end
     end
     return u
   end
@@ -187,17 +194,15 @@ class ApplicationController < ActionController::Base
     puts "="*100
     case params["name"]
     when "app.uninstall"
-      @current_user.delete
+       
     when "app.install"
       # localhost:3000/flock_events?token=98ac35f0-7b3e-4f0c-97df-e43614cce558&name=app.install&userId="u:auecvebiuce2xcjb"
-      user = User.find_or_create_by(flock_user_id: params["userId"]) do |u|
-        u.flock_token = params["token"]
-        u.email = "#{params['userId'].split(':')[1]}@flockgfw.com"
-        u.password = "User1234"
-      end
-      puts "==="*10
-      puts user.inspect
-      puts "==="*10
+      user = User.find_or_create_by(flock_user_id: params["userId"]) #do |u|
+      user.flock_token = params["token"]
+      user.email = "#{params['userId'].split(':')[1]}@flockgfw.com"
+      user.password = "User1234"
+      user.save
+      # end
       # user.create_token_store
     when "client.pressButton"
       current_user = User.find_by(flock_user_id: params["userId"])

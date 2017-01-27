@@ -14,10 +14,10 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   after_initialize :init
-  validates_uniqueness_of :flock_token, message: "must be unique"
+  validates_uniqueness_of :flock_user_id, message: "must be unique"
   has_one :token_store
   
-  store_accessor :content, :last_message, :teamId, :profileImage
+  store_accessor :content, :last_message, :teamId, :profileImage, :firstName, :lastName
 
   def init
     self.content ||= {}
