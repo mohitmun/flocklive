@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
     if params[:my_tweets] == "true"
       @tweets = Tweet.where(from_id: current_user1.flock_user_id).order(:created_at => :desc) rescue []
     else
-      @tweets = Tweet.viewable(@current_user.teamId)
+      @tweets = Tweet.viewable(@current_user.teamId).order(created_at: :desc)
       hashtag = Hashtag.find_by(content: params[:hashtag])
       if !hashtag.blank?
         @title = "##{hashtag.content}"
