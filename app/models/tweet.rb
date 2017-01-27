@@ -25,20 +25,20 @@ class Tweet < ActiveRecord::Base
   end
 
   def flock_ml
-    # <flockml> click <action id='act1' type='openWidget' url='https://83ccbc32.ngrok.io/tweets?hashtag=adas' desktopType='sidebar' mobileType='modal'>here</action> to launch a widget. </flockml>
+    # <flockml> click <action id='act1' type='openWidget' url='https://hashman.herokuapp.com/tweets?hashtag=adas' desktopType='sidebar' mobileType='modal'>here</action> to launch a widget. </flockml>
     root = content
     hashtags.each do |h|
-      hashtag_link = "<action id='act1' type='openWidget' url='https://83ccbc32.ngrok.io/tweets?hashtag=#{h.content}' desktopType='sidebar' mobileType='modal'>##{h.content}</action>"
+      hashtag_link = "<action id='act1' type='openWidget' url='https://hashman.herokuapp.com/tweets?hashtag=#{h.content}' desktopType='sidebar' mobileType='modal'>##{h.content}</action>"
       root = root.gsub("##{h.content}", hashtag_link)
     end
     "<flockml> #{root} </flockml>"
   end
 
   def html_view
-    # <flockml> click <action id='act1' type='openWidget' url='https://83ccbc32.ngrok.io/tweets?hashtag=adas' desktopType='sidebar' mobileType='modal'>here</action> to launch a widget. </flockml>
+    # <flockml> click <action id='act1' type='openWidget' url='https://hashman.herokuapp.com/tweets?hashtag=adas' desktopType='sidebar' mobileType='modal'>here</action> to launch a widget. </flockml>
     root = content
     hashtags.each do |h|
-      hashtag_link = "<a href='https://83ccbc32.ngrok.io/tweets?hashtag=#{h.content}'>##{h.content}</a>"
+      hashtag_link = "<a href='https://hashman.herokuapp.com/tweets?hashtag=#{h.content}'>##{h.content}</a>"
       root = root.gsub("##{h.content}", hashtag_link)
     end
     return root
