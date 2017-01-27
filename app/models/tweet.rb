@@ -12,7 +12,10 @@ class Tweet < ActiveRecord::Base
   def after_create
     hashtags_string = content.scan(/#\S+/)
     hashtags_string.each do |hashtag|
-      hashtags.create(content: hashtag[1..-1])
+      temp = hashtags.create(content: hashtag[1..-1])
+      if temp.id.blank?
+        HashtagMapping.create(tweet_id: self.id, hashtag_id: Hashtag.find_by(content: hashtag[1..-1]).id)
+      end
     end
   end
 
@@ -65,12 +68,16 @@ class Tweet < ActiveRecord::Base
 
   def get_user_info(current_user, userid)
     user = User.find_by(flock_user_id: userid) rescue nil
-    if !user
+    if !user && !userid.blank?
       puts "==== fetching punlic profile ===== "
       public_profile = current_user.get_public_profile(userid)
-      user = User.create(firstName: public_profile["firstName"], lastName: public_profile["lastName"], profileImage: public_profile["profileImage"], flock_user_id: public_profile["id"], password: "User1234", email: "#{public_profile['id'].split(':')[1]}@flockgfw.com")
+      user = User.create(firstName: public_profile["firstName"], lastName: public_profile["lastName"], profileImage: public_profile["profileImage"], flock_user_id: public_profile["id"], password: "User1234", email: "#{public_profile['id'].split(':')[1]}@flockgfw.com") rescue nil
     end
-    return {profileImage: user.profileImage, firstName: user.firstName, lastName: user.lastName}
+    if user
+      return {profileImage: user.profileImage, firstName: user.firstName, lastName: user.lastName}
+    else
+      return {profileImage: "https://i.flockusercontent.com/default-101.png", firstName: "Flock User"}
+    end
   end
 
   def from_info(current_user)
@@ -78,8 +85,12 @@ class Tweet < ActiveRecord::Base
   end
 
   def to_info(current_user)
+    if to_id.blank?
+      temp = current_user.fetch_message(chat_id, message_id)
+      self.to_id = temp["to"]
+      self.save
+    end
     return get_user_info(current_user, to_id)
-    
   end
 
   def reaction_types

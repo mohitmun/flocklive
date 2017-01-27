@@ -80,7 +80,7 @@
       }
 
       .emoji-reactions {
-        left: -104px;
+        left: -4px;
         position: absolute;
         top: -50px;
         z-index: 200;

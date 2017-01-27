@@ -1,7 +1,7 @@
 - Hashtag.all.each do |hashtag|
   %div.hashtag{data: {position:hashtag.tweets.count}, style: "margin-top: 15px"}
-    %div{style: "display: inline-block;font-size:20px; font-weight: 500;"}= link_to "##{hashtag.content} (#{hashtag.tweets.count})", tweets_path(hashtag: hashtag.content)    
     = render partial: "welcome/reactions", locals: {id: hashtag.id, type: "Hashtag"}
+    %div{style: "display: inline-block;font-size:20px; font-weight: 500;"}= link_to "##{hashtag.content} (#{hashtag.tweets.count})", tweets_path(hashtag: hashtag.content)    
     %div
       - reaction_types = hashtag.reaction_types
       - lol = false
