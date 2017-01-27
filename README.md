@@ -8,7 +8,8 @@ Hashman brings hashtag support to flock. It lets others see what you are talking
 ##Features:
   - Twitter like Trends (see trends across team and all flock users)
   - Manage visibility of message (flock/your team/ private)
-
+  - React to Hashtag or Tweet (like, sad, anger etc)
+  - Quick message action to make any message public/private
 
 ## Steps to run
 Update config/database.yml with database name and user credentials
