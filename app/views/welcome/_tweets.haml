@@ -2,13 +2,14 @@
 - @tweets.each do |tweet|
   - no_tweets = false
   %div{style: "margin:7px;padding:10px;background: #fff;border: 1px solid #e1e8ed;"}
-    %img{src: tweet.from_info(@current_user)[:profileImage], style: "float:left;height: 20px;padding-right: 6px"}
-    = ">>"
-    %img{src: tweet.to_info(@current_user)[:profileImage], style: "height: 20px"}
+    %div
+      %img{src: tweet.from_info(@current_user)[:profileImage], style: "float:left;height: 20px;margin-right: 6px; width: 20px; border-radius: 50%"}
+      = ">>"
+      %img{src: tweet.to_info(@current_user)[:profileImage], style: "height: 20px; width: 20px; border-radius: 50%"}
     .tweet{data_position: tweet.score, style: ""}
       = raw tweet.html_view
       - if tweet.is_mine?(@current_user.flock_user_id)
-        %div{style: "font-size: 12px;"}
+        %div{style: "font-size: 10px; "}
           %span{style: "opacity: 0.4;"}= tweet.visibility_message
           %span{style: "opacity: 1"}= link_to "change", change_visibility_path(tweet_id: tweet.id)
       

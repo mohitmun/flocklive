@@ -251,8 +251,7 @@ class ApplicationController < ActionController::Base
       t = Tweet.create(visibility: "team", content: tweet, from_id: params["userId"], from: params["userName"], chat_id: params["chat"], teamId: current_user1.teamId)
       response = current_user1.send_to_id(params["chat"], t.flock_ml, nil)
       uid = JSON.parse(response)["uid"]
-      t.message_id = uid
-      t.save
+      t.update(:message_id => uid)
     end
     # {"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb", "controller"=>"application", "action"=>"flock_events", "application"=>{"userToken"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "token"=>"98ac35f0-7b3e-4f0c-97df-e43614cce558", "name"=>"app.install", "userId"=>"u:auecvebiuce2xcjb"}}
 

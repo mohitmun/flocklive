@@ -10,12 +10,17 @@ class Tweet < ActiveRecord::Base
 
 
   def after_create
+    puts "====== insider after_create"
     hashtags_string = content.scan(/#\S+/)
     hashtags_string.each do |hashtag|
-      temp = hashtags.create(content: hashtag[1..-1])
-      if temp.id.blank?
-        HashtagMapping.create(tweet_id: self.id, hashtag_id: Hashtag.find_by(content: hashtag[1..-1]).id)
+      existing_hash = Hashtag.find_by(content: hashtag[1..-1])
+      if existing_hash
+        puts "====== existing_hash after_create"
+      else
+        puts "====== new hashs after_create"
+        existing_hash = Hashtag.create(content: hashtag[1..-1])
       end
+      HashtagMapping.create(tweet_id: id, hashtag_id: existing_hash.id, created_at: Time.now, updated_at: Time.now)
     end
   end
 
@@ -87,7 +92,7 @@ class Tweet < ActiveRecord::Base
   def to_info(current_user)
     if to_id.blank?
       temp = current_user.fetch_message(chat_id, message_id)
-      self.to_id = temp["to"]
+      self.to_id = temp["to"] rescue nil
       self.save
     end
     return get_user_info(current_user, to_id)
