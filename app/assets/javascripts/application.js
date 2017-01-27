@@ -19,7 +19,7 @@
             var interVal;
       
             $(document).ready(function() {
-      
+          $(".showEmotions").unbind();
               $(".showEmotions").hover(function() {
       
                 if (isAnimationEnable == 0) {
@@ -57,8 +57,32 @@
               }
       
             });}
-            start_react();
+            // start_react();
+function ajax_init() {
+  // body...
+  function temp() {
+      // body...
+      type = $(this).parents(".actionBox").data("type");
+      id = $(this).parents(".actionBox").data("id");
+      reaction_type = $(this).find(".react").data("type");
+       $.ajax({
+        url: "/save_reaction",
+        type: 'POST',
+        data: {"type" : type, "id" : id, "reaction_type": reaction_type},
+        success: function(data){
+          console.log("wohhoo:" +data);
+          $(".listitems").html(data);
+          start_react();
+          run_sort();
+        },
+        error: function(data){
 
+        }
+      });
+      console.log("reaction clicked:" + $(this).find(".react").data("type"));
+    }
+  $(document).off("click", ".reaction").on("click", ".reaction", temp);
+}
 
            function run_sort(){$(".listitems .hashtag").sort(sort_li).appendTo('.listitems');
         function sort_li(a, b){

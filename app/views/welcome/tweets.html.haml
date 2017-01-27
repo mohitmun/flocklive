@@ -6,3 +6,7 @@
 %div{style: "font-size: 15px;width:100%; height:100%;"}
   .listitems
     = render partial: "welcome/tweets"
+%script
+  :plain
+    start_react();
+    ajax_init()

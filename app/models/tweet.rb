@@ -4,6 +4,7 @@ class Tweet < ActiveRecord::Base
   has_many :hashtag_mappings
   has_many :hashtags, :through => :hashtag_mappings, :source => :hashtag
   store_accessor :json_store, :message_id, :chat_id, :visibility, :teamId
+  has_many :reactions, as: :item
 
   scope :viewable, -> (teamId) {where("json_store ->> 'visibility' = ? OR (json_store ->> 'teamId' = ? AND json_store ->> 'visibility' = ?)", "flock", "#{teamId}", "team")}
 
@@ -81,5 +82,10 @@ class Tweet < ActiveRecord::Base
     
   end
 
+  def reaction_types
+    reaction_types = reactions.pluck(:reaction_type)
+    histogram = reaction_types.inject(Hash.new(0)) { |hash, x| hash[x] += 1; hash}
+    reaction_types.sort_by { |x| [histogram[x], x] }.reverse
+  end
 
 end

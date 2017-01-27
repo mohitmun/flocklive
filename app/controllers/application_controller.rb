@@ -32,17 +32,22 @@ class ApplicationController < ActionController::Base
     if params[:type] == "Hashtag"
       render partial: "welcome/trends"
     else
+      init_tweets
       render partial: "welcome/tweets"
     end
   end
 
-  def tweets
-    @tweets = Tweet.viewable(@current_user.teamId)
+  def init_tweets
+  @tweets = Tweet.viewable(@current_user.teamId)
     hashtag = Hashtag.find_by(content: params[:hashtag])
     if !hashtag.blank?
       @title = "##{hashtag.content}"
     end
-    @tweets = hashtag.tweets.viewable(@current_user.teamId) rescue @tweets
+    @tweets = hashtag.tweets.viewable(@current_user.teamId) rescue @tweets  
+  end
+
+  def tweets
+    init_tweets
     render "welcome/tweets"
   end
 

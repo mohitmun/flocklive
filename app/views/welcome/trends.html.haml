@@ -10,27 +10,7 @@
   :plain
     run_sort();
     start_react();
-    $(document).on("click", ".reaction", function() {
-      // body...
-      type = $(this).parents(".actionBox").data("type");
-      id = $(this).parents(".actionBox").data("id");
-      reaction_type = $(this).find(".react").data("type");
-       $.ajax({
-        url: "/save_reaction",
-        type: 'POST',
-        data: {"type" : type, "id" : id, "reaction_type": reaction_type},
-        success: function(data){
-          console.log("wohhoo:" +data);
-          $(".listitems").html(data);
-          start_react();
-          run_sort();
-        },
-        error: function(data){
-
-        }
-      });
-      console.log("reaction clicked:" + $(this).find(".react").data("type"));
-    });
+    ajax_init();
   / %input.form-control#formGroupExampleInput{"type"=>"text", "placeholder"=>"Search Drive", style: "border-color: #0abe50;"}
   / %div{style: "margin-top: 20px;"}
   /   - limit = 100
