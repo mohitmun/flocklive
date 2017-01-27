@@ -38,12 +38,16 @@ class ApplicationController < ActionController::Base
   end
 
   def init_tweets
-  @tweets = Tweet.viewable(@current_user.teamId)
-    hashtag = Hashtag.find_by(content: params[:hashtag])
-    if !hashtag.blank?
-      @title = "##{hashtag.content}"
+    if params[:my_tweets] == "true"
+      @tweets = Tweet.where(from_id: current_user1.flock_user_id).order(:created_at => :desc) rescue []
+    else
+      @tweets = Tweet.viewable(@current_user.teamId)
+      hashtag = Hashtag.find_by(content: params[:hashtag])
+      if !hashtag.blank?
+        @title = "##{hashtag.content}"
+      end
+      @tweets = hashtag.tweets.viewable(@current_user.teamId) rescue @tweets  
     end
-    @tweets = hashtag.tweets.viewable(@current_user.teamId) rescue @tweets  
   end
 
   def tweets
@@ -52,6 +56,7 @@ class ApplicationController < ActionController::Base
   end
 
   def my_tweets
+    @my_tweets = "true"
     # hashtag = Hashtag.find_by(content: params[:hashtag])
     @tweets = Tweet.where(from_id: current_user1.flock_user_id).order(:created_at => :desc) rescue []
     render "welcome/tweets"

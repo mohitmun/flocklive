@@ -64,11 +64,12 @@ function ajax_init() {
       // body...
       type = $(this).parents(".actionBox").data("type");
       id = $(this).parents(".actionBox").data("id");
+      my_tweets = $(this).parents(".actionBox").data("my-tweets");
       reaction_type = $(this).find(".react").data("type");
        $.ajax({
         url: "/save_reaction",
         type: 'POST',
-        data: {"type" : type, "id" : id, "reaction_type": reaction_type},
+        data: {"type" : type, "id" : id, "reaction_type": reaction_type, "my_tweets": my_tweets},
         success: function(data){
           console.log("wohhoo:" +data);
           $(".listitems").html(data);
