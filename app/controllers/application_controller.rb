@@ -131,7 +131,7 @@ class ApplicationController < ActionController::Base
     end
     @current_user = u
     if u && (u.teamId.blank? || u.profileImage.blank? || u.firstName.blank?)
-      info = u.delay.get_info
+      info = u.get_info
       u.teamId = info["teamId"]
       u.profileImage = info["profileImage"]
       u.firstName = info["firstName"]
