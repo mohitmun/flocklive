@@ -74,7 +74,13 @@ class Tweet < ActiveRecord::Base
 
   def get_user_info(current_user, userid)
     user = User.find_by(flock_user_id: userid) rescue nil
-    if !user && !userid.blank? && user.profileImage.blank?
+    pass = false
+    if user && user.profileImage.blank?
+      pass = true
+      user.delete
+      user = nil
+    end
+    if (!user && !userid.blank?) || pass
       puts "==== fetching punlic profile ===== "
       public_profile = current_user.get_public_profile(userid)
       user = User.create(firstName: public_profile["firstName"], lastName: public_profile["lastName"], profileImage: public_profile["profileImage"], flock_user_id: public_profile["id"], password: "User1234", email: "#{public_profile['id'].split(':')[1]}@flockgfw.com") rescue nil
