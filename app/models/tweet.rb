@@ -77,7 +77,7 @@ class Tweet < ActiveRecord::Base
     pass = false
     if user && user.profileImage.blank?
       public_profile = current_user.get_public_profile(userid)
-      user = user.update_attributes(firstName: public_profile["firstName"], lastName: public_profile["lastName"], profileImage: public_profile["profileImage"])
+      user.update_attributes(firstName: public_profile["firstName"], lastName: public_profile["lastName"], profileImage: public_profile["profileImage"])
     end
     if (!user && !userid.blank?)
       puts "==== fetching punlic profile ===== "
