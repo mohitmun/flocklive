@@ -6,7 +6,8 @@ class Tweet < ActiveRecord::Base
   store_accessor :json_store, :message_id, :chat_id, :visibility, :teamId
   has_many :reactions, as: :item
 
-  scope :viewable, -> (teamId) {where("json_store ->> 'visibility' = ? OR (json_store ->> 'teamId' = ? AND json_store ->> 'visibility' = ?)", "flock", "#{teamId}", "team")}
+  # scope :viewable, -> (teamId) {where("json_store ->> 'visibility' = ? OR (json_store ->> 'teamId' = ? AND json_store ->> 'visibility' = ?)", "flock", "#{teamId}", "team")}
+  scope :viewable, -> (teamId) {where(nil)}
 
 
   def after_create
@@ -73,7 +74,7 @@ class Tweet < ActiveRecord::Base
 
   def get_user_info(current_user, userid)
     user = User.find_by(flock_user_id: userid) rescue nil
-    if !user && !userid.blank?
+    if !user && !userid.blank? && user.profileImage.blank?
       puts "==== fetching punlic profile ===== "
       public_profile = current_user.get_public_profile(userid)
       user = User.create(firstName: public_profile["firstName"], lastName: public_profile["lastName"], profileImage: public_profile["profileImage"], flock_user_id: public_profile["id"], password: "User1234", email: "#{public_profile['id'].split(':')[1]}@flockgfw.com") rescue nil
