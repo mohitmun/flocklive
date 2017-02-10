@@ -138,10 +138,7 @@ class ApplicationController < ActionController::Base
       u.lastName = info["lastName"]
       u.save
       roster = u.delay.get_roster
-      roster.each do |roster_item|
-        temp = User.create(firstName: roster_item["firstName"], lastName: roster_item["lastName"], profileImage: roster_item["profileImage"], flock_user_id: roster_item["id"], password: "User1234", email: "#{roster_item['id'].split(':')[1]}@flockgfw.com") rescue nil
-        # puts "#{temp.errors.messages.inspect}"
-      end
+      
     end
     return u
   end

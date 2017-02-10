@@ -201,8 +201,12 @@ class User < ActiveRecord::Base
     request.body = "{\"token\": \"#{flock_token}\"}"      
     response = http.request(request)
     # puts response.read_body
-    JSON.parse(response.read_body)
+    roster = JSON.parse(response.read_body)
     # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
+    roster.each do |roster_item|
+      temp = User.create(firstName: roster_item["firstName"], lastName: roster_item["lastName"], profileImage: roster_item["profileImage"], flock_user_id: roster_item["id"], password: "User1234", email: "#{roster_item['id'].split(':')[1]}@flockgfw.com") rescue nil
+      # puts "#{temp.errors.messages.inspect}"
+    end
   end
   
   def get_public_profile(userId)
