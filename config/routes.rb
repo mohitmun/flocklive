@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
-   root :to => "application#tweets"
+  root :to => "application#tweets"
   post '/gmail_inbound' => 'application#gmail_inbound'
   post '/new_tweet' => 'application#new_tweet'
   post '/send_to_telegram' => 'application#send_to_telegram'
@@ -22,6 +22,10 @@ Rails.application.routes.draw do
   get '/trends' => 'application#trends'
   post '/save_reaction' => 'application#save_reaction'
   get '/tweets' => 'application#tweets'
+  get '/live_feed' => 'application#live_feed'
+  get '/archive' => 'application#archive'
+  get '/go_live' => 'application#go_live'
+  get '/go_live_submit' => 'application#go_live_submit'
   get '/my_tweets' => 'application#my_tweets'
   get '/replyModal' => 'application#replyModal'
   get '/submit_reply' => 'application#submit_reply'
