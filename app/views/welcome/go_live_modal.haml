@@ -1,0 +1,12 @@
+- broadcast_id = (current_user.id rescue "mama")
+%h3
+  / Go live
+  %div
+    %input{style: "width:100%", type:"text", id:"description", placeholder:"Description"}
+    %button#open-or-join Go Live
+  %script
+    :plain
+      $(document).on("click", "#open-or-join",function(){
+
+        $.ajax({url: '/go_live_submit?description=' + $("#description").val(), type: 'POST', success: function(){    flock.close();}});
+      });
