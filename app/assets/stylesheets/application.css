@@ -237,5 +237,12 @@
         padding: 0px 15px;
         top: -9px;
       }
+      .blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {  
+  50% { opacity: 0; }
+}
 
 
