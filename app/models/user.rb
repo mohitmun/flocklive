@@ -164,6 +164,35 @@ class User < ActiveRecord::Base
     return response.read_body
     # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
   end
+  
+  def send_iframe(id, options)
+    require 'uri'
+    require 'net/http'
+
+    url = URI("https://api.flock.co/v1/chat.sendMessage")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Post.new(url)
+    request["content-type"] = 'application/json'
+    request["cache-control"] = 'no-cache'
+    request.body = "{\"token\": \"#{flock_token}\", \"title\": \"User is Live\", \"to\": \"#{id}\", \"attachments\":[{    \"title\": \"attachment title\",\"description\":\"#{options[:description]}\",
+    \"buttons\": [ {
+        \"name\": \"Go Offline\",
+        \"id\":\"offline\",
+        \"action\": { \"type\": \"sendEvent\"}
+    }],
+    \"views\":{\"widget\":{\"src\":\"https://30ccb242.ngrok.io/go_live?video=true&bare=true&broadcast_id=#{options[:broadcast_id]}\",\"width\":600,\"height\":450}}}]}"
+    puts "===="
+    puts options
+    puts "===="
+    response = http.request(request)
+    puts response.read_body
+    return response.read_body
+    # RestClient.post "https://api.flock.co/v1/chat.sendMessage", {token: flock_token, to: id, text: message, attachments: [attachments]}
+  end
 
   def fetch_message(chat_id, message_id)
     require 'uri'

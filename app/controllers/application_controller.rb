@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   before_filter :permit_params
   # before_filter :login_if_not, :except => [:connect_google, :oauth2_callback_google, :youtube_liked, :send_to_telegram, :flock_events]
   before_filter :allow_iframe_requests
-
+  $live_streams = {}
   def allow_iframe_requests
     response.headers.delete('X-Frame-Options')
   end
@@ -18,6 +18,39 @@ class ApplicationController < ActionController::Base
   def trends
     @query = params["query"] || ""
     render "welcome/trends"
+  end
+
+  def live_feed
+    @live_streams = $live_streams
+    render "welcome/live_feed"
+  end
+
+  def archive
+    render "welcome/archive"
+  end
+
+  def go_live
+    if params[:modal] == "true"
+      @chat_id = JSON.parse(params["flockEvent"])["chat"]
+      puts "="*50
+      puts "chat: #{@chat_id}"
+      puts "="*50
+      render "welcome/go_live_modal"
+    else
+      @broadcast_id = params[:broadcast_id]
+      render "welcome/go_live"
+    end
+  end
+
+  def go_live_submit
+    description = params[:description]
+    # @current_user.
+    timestamp = Time.now.to_i
+    broadcast_id = "#{@current_user.id}_#{timestamp}"
+    $live_streams = {}
+    $live_streams[broadcast_id] = broadcast_id 
+    @current_user.send_iframe(params[:chat], {broadcast_id: broadcast_id, description: description})
+    render json: {message: "ok"}, status: 200
   end
 
   def change_visibility
@@ -94,13 +127,17 @@ class ApplicationController < ActionController::Base
   end
 
   def permit_params
+    @root = "http://30ccb242.ngrok.io"
     params.permit!
+    puts "=="*10
+    puts params.inspect
+    puts "=="*10
     if params[:flockValidationToken]
-      decoded_token = JWT.decode params[:flockValidationToken], "fb90273c-7bff-4aaf-83de-3722712f2c46", true, { :algorithm => 'HS256' }
+      decoded_token = JWT.decode params[:flockValidationToken], "3a86ddbe-2c46-498b-aa65-a52fec3daddc", true, { :algorithm => 'HS256' }
       session[:current_user_id] = User.find_by(flock_user_id: decoded_token[0]["userId"]).id rescue nil
     end
     if params[:flockEventToken]
-      decoded_token = JWT.decode params[:flockEventToken], "fb90273c-7bff-4aaf-83de-3722712f2c46", true, { :algorithm => 'HS256' }
+      decoded_token = JWT.decode params[:flockEventToken], "3a86ddbe-2c46-498b-aa65-a52fec3daddc", true, { :algorithm => 'HS256' }
       session[:current_user_id] = User.find_by(flock_user_id: decoded_token[0]["userId"]).id rescue nil
     end
     current_user1
