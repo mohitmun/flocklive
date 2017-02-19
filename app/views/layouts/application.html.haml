@@ -37,7 +37,9 @@
                 %li.nav-item
                   %a.nav-link{:title => "Archived", :href => archive_path, :style => ("color:white;" if current_page?(archive_path))} Archived
                 %li.nav-item
-                  %a.blink_me.nav-link{:title => "Go Live", :href => go_live_path, :style => ("color:green;" if current_page?(go_live_path))} Go Live
+                  - live = @live_streams.keys.include?(@current_user.id)
+                  - lol = live ? "Live" : "Go Live"
+                  %a.nav-link{class: ("blink_me" if live), :title => lol, :href => go_live_path, :style => ("color:green;" if current_page?(go_live_path))}= lol
                 / - if !current_page?(my_tweets_path)
                 / %li.nav-item
                 /  / %a.nav-link{:title => "My Tweets", :href => my_tweets_path, :style => ("color:white;" if current_page?(my_tweets_path))} My Tweets

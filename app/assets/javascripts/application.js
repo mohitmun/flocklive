@@ -86,7 +86,8 @@
                     // alert('Broadcast has been stopped.');
                     // location.reload();
                     console.error('broadcast-stopped', broadcastId);
-                    alert('This broadcast has been stopped.');
+                    // alert('This broadcast has been stopped.');
+                    location.reload()
                 });
 
                 // this event is emitted when a broadcast is absent.
@@ -111,10 +112,10 @@
 
             window.onbeforeunload = function() {
                 // Firefox is ugly.
-                document.getElementById('open-or-join').disabled = false;
+                document.getElementById('open-or-join-'+ bc).disabled = false;
             };
 
-            var videoPreview = document.getElementById('video-preview');
+            var videoPreview = document.getElementById('video-preview-'+bc);
 
             connection.onstream = function(event) {
                 if(connection.isInitiator && event.type !== 'local') {
@@ -187,17 +188,17 @@
             // ask node.js server to look for a broadcast
             // if broadcast is available, simply join it. i.e. "join-broadcaster" event should be emitted.
             // if broadcast is absent, simply create it. i.e. "start-broadcasting" event should be fired.
-            document.getElementById('open-or-join').onclick = function() {
+            document.getElementById('open-or-join-'+ bc).onclick = function() {
                 // var broadcastId = document.getElementById('broadcast-id').value;
                 var broadcastId = bc;
 
                 if (broadcastId.replace(/^\s+|\s+$/g, '').length <= 0) {
-                    alert('Please enter broadcast-id');
+                    // alert('Please enter broadcast-id');
                     //document.getElementById('broadcast-id').focus();
                     return;
                 }
 
-                document.getElementById('open-or-join').disabled = true;
+                document.getElementById('open-or-join-'+ bc).disabled = true;
 
                 connection.session = {
                     audio: true,
@@ -289,7 +290,7 @@
             };
 
             function disableInputButtons() {
-                document.getElementById('open-or-join').disabled = true;
+                document.getElementById('open-or-join-'+ bc).disabled = true;
                 //document.getElementById('broadcast-id').disabled = true;
             }
 
@@ -351,7 +352,7 @@
             //     (function reCheckRoomPresence() {
             //         connection.checkPresence(broadcastId, function(isRoomExists) {
             //             if(isRoomExists) {
-            //                 document.getElementById('open-or-join').onclick();
+            //                 document.getElementById('open-or-join-'+ bc).onclick();
             //                 return;
             //             }
 

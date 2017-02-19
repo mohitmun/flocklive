@@ -181,7 +181,7 @@ class User < ActiveRecord::Base
     request.body = "{\"token\": \"#{flock_token}\", \"title\": \"User is Live\", \"to\": \"#{id}\", \"attachments\":[{    \"title\": \"attachment title\",\"description\":\"#{options[:description]}\",
     \"buttons\": [ {
         \"name\": \"Go Offline\",
-        \"id\":\"offline\",
+        \"id\":\"offline-#{options[:broadcast_id]}\",
         \"action\": { \"type\": \"sendEvent\"}
     }],
     \"views\":{\"widget\":{\"src\":\"https://30ccb242.ngrok.io/go_live?video=true&bare=true&broadcast_id=#{options[:broadcast_id]}\",\"width\":600,\"height\":450}}}]}"

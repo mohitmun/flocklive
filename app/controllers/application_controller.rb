@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   # before_filter :login_if_not, :except => [:connect_google, :oauth2_callback_google, :youtube_liked, :send_to_telegram, :flock_events]
   before_filter :allow_iframe_requests
   $live_streams = {}
+  $removed_streams = {}
   def allow_iframe_requests
     response.headers.delete('X-Frame-Options')
   end
@@ -21,7 +22,6 @@ class ApplicationController < ActionController::Base
   end
 
   def live_feed
-    @live_streams = $live_streams
     render "welcome/live_feed"
   end
 
@@ -30,6 +30,7 @@ class ApplicationController < ActionController::Base
   end
 
   def go_live
+    @removed_streams = $removed_streams
     if params[:modal] == "true"
       @chat_id = JSON.parse(params["flockEvent"])["chat"]
       puts "="*50
@@ -47,8 +48,8 @@ class ApplicationController < ActionController::Base
     # @current_user.
     timestamp = Time.now.to_i
     broadcast_id = "#{@current_user.id}_#{timestamp}"
-    $live_streams = {}
-    $live_streams[broadcast_id] = broadcast_id 
+    # $live_streams = {}
+    $live_streams[current_user.id] = broadcast_id 
     @current_user.send_iframe(params[:chat], {broadcast_id: broadcast_id, description: description})
     render json: {message: "ok"}, status: 200
   end
@@ -127,6 +128,7 @@ class ApplicationController < ActionController::Base
   end
 
   def permit_params
+    @live_streams = $live_streams
     @root = "http://30ccb242.ngrok.io"
     params.permit!
     puts "=="*10
@@ -249,6 +251,8 @@ class ApplicationController < ActionController::Base
       # end
       # user.create_token_store
     when "client.pressButton"
+      user_id, broadcast_id = params["buttonId"].split("-")
+      $removed_streams[user_id] = broadcast_id
       # current_user = User.find_by(flock_user_id: params["userId"])
       # if params["buttonId"].include?("calender")
       #   current_user.schedule(params["buttonId"].split(":")[1], (Time.now + 1.hours).to_s , (Time.now + 2.hours).to_s)

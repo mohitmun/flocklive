@@ -5,17 +5,22 @@
 / }
 %h3
   / Go live
-  %div
-    - if params[:video] != "true"
-      %input{style: "width:100%", type:"text", id:"description", placeholder:"Description"}
-    %div#video_wrapper
-      %video{id:"video-preview", controls: "", loop:"", style: "width:80%; margin: 0 auto;display: block;"}
-    %button#open-or-join{style: ("display: none" if params[:video] == "true")} Go Live
+  / = @removed_streams
+  - if @removed_streams.values.include?(@broadcast_id)
+    %h5{style: "margin-top: 50px"}
+      User went Offline
+  - else
+    %div
+      - if params[:video] != "true"
+        %input{style: "width:100%", type:"text", id:"description", placeholder:"Description"}
+      %div#video_wrapper
+        %video{id:"video-preview-" + @broadcast_id, controls: "", loop:"", style: "width:80%; margin: 0 auto;display: block;"}
+      %button{id: "open-or-join-"+ @broadcast_id, style: ("display: none" if params[:video] == "true")} Go Live
 
-  %script
-    console.log("before calling god function");
-    god_function("#{@broadcast_id}");
-    $("#open-or-join").click();
+    %script
+      console.log("before calling god function");
+      god_function("#{@broadcast_id}");
+      $("#open-or-join-" + "#{@broadcast_id}").click();
   / - if !params[:broadcast_id].blank?
   /   %script
   /     :plain
