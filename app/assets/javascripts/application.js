@@ -48,7 +48,7 @@
             // user need to connect server, so that others can reach him.
             connection.connectSocket(function(socket) {
                 socket.on('logs', function(log) {
-                    document.querySelector('h1').innerHTML = log.replace(/</g, '----').replace(/>/g, '___').replace(/----/g, '(<span style="color:red;">').replace(/___/g, '</span>)');
+                    // document.querySelector('h1').innerHTML = log.replace(/</g, '----').replace(/>/g, '___').replace(/----/g, '(<span style="color:red;">').replace(/___/g, '</span>)');
                 });
 
                 // this event is emitted when a broadcast is already created.
@@ -308,9 +308,9 @@
                 html += 'QueryString URL: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
 
                 var roomURLsDiv = document.getElementById('room-urls');
-                roomURLsDiv.innerHTML = html;
+                // roomURLsDiv.innerHTML = html;
 
-                roomURLsDiv.style.display = 'block';
+                // roomURLsDiv.style.display = 'block';
             }
             (function() {
                 var params = {},
@@ -341,8 +341,8 @@
             if(!broadcastId && hashString.length) {
                 broadcastId = hashString;
             }
-            // broadcastId = bc;
-            // console.log("===" + broadcastId);
+            var broadcastId = bc;
+            console.log("===" + broadcastId);
             // if(broadcastId && broadcastId.length) {
             //     //document.getElementById('broadcast-id').value = broadcastId;
             //     localStorage.setItem(connection.socketMessageEvent, broadcastId);
@@ -364,12 +364,11 @@
 
             // below section detects how many users are viewing your broadcast
 
-            connection.onNumberOfBroadcastViewersUpdated = function(event) {
-                if (!connection.isInitiator) return;
+            // connection.onNumberOfBroadcastViewersUpdated = function(event) {
+            //     if (!connection.isInitiator) return;
 
-                document.getElementById('broadcast-viewers-counter').innerHTML = 'Number of broadcast viewers: <b>' + event.numberOfBroadcastViewers + '</b>';
-            };
-  
+            //     document.getElementById('broadcast-viewers-counter').innerHTML = 'Number of broadcast viewers: <b>' + event.numberOfBroadcastViewers + '</b>';
+            // };
     }
 
      function start_react(){  var isAnimationEnable = 0;

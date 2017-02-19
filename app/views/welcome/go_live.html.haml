@@ -6,10 +6,11 @@
 %h3
   / Go live
   %div
-    %input{style: "width:100%", type:"text", id:"description", placeholder:"Description"}
+    - if params[:video] != "true"
+      %input{style: "width:100%", type:"text", id:"description", placeholder:"Description"}
     %div#video_wrapper
       %video{id:"video-preview", controls: "", loop:"", style: "width:80%; margin: 0 auto;display: block;"}
-    %button#open-or-join Go Live
+    %button#open-or-join{style: ("display: none" if params[:video] == "true")} Go Live
 
   %script
     console.log("before calling god function");

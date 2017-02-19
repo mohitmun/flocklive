@@ -249,14 +249,14 @@ class ApplicationController < ActionController::Base
       # end
       # user.create_token_store
     when "client.pressButton"
-      current_user = User.find_by(flock_user_id: params["userId"])
-      if params["buttonId"].include?("calender")
-        current_user.schedule(params["buttonId"].split(":")[1], (Time.now + 1.hours).to_s , (Time.now + 2.hours).to_s)
-      elsif params["buttonId"].include?("reply")
-        # from = params["buttonId"].split(":")[1]
-        # subject = params["buttonId"].split(":")[2]
-        # current_user.send_mail()
-      end
+      # current_user = User.find_by(flock_user_id: params["userId"])
+      # if params["buttonId"].include?("calender")
+      #   current_user.schedule(params["buttonId"].split(":")[1], (Time.now + 1.hours).to_s , (Time.now + 2.hours).to_s)
+      # elsif params["buttonId"].include?("reply")
+      #   # from = params["buttonId"].split(":")[1]
+      #   # subject = params["buttonId"].split(":")[2]
+      #   # current_user.send_mail()
+      # end
     when "chat.receiveMessage"
       message = params["message"]
       text = message["text"]
